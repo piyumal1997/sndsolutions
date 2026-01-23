@@ -1,4 +1,4 @@
-import companylogo from '../assets/images/logo.png';
+import companylogo from '../assets/images/sndlogo.png';
 
 export const company = {
   name: "S & D Solutions (Pvt) Ltd.",
