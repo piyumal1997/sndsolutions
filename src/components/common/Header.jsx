@@ -39,7 +39,7 @@ const Header = () => {
       </div>
 
       {/* Main Header */}
-      <header className="fixed top-10 left-0 right-0 bg-white shadow-lg z-40">
+      <header className="fixed top-10 left-0 right-0 bg-white shadow-lg z-40 opacity-90">
         <div className="container mx-auto px-6 py-3 flex justify-between items-center">
           <NavLink to="/" className="flex items-center gap-3">
             <FontAwesomeIcon icon={faSun} className="text-green-600 text-4xl md:text-5xl" />
