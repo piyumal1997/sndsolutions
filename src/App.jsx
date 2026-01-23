@@ -21,7 +21,7 @@ const Admin = lazy(() => import('./pages/AdminDashboard'));
 const Layout = () => (
   <>
     <Header />
-    <main>
+    <main className="pt-[var(--total-header-height)]">
       <Suspense fallback={<LoadingSpinner />}>
         <Outlet />
       </Suspense>

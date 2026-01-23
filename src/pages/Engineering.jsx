@@ -1,7 +1,7 @@
 // src/pages/Engineering.jsx
 const Engineering = () => {
   return (
-    <section className="pt-32 py-20 bg-gray-50">
+    <section className="py-20 bg-gray-50">
       <div className="container mx-auto px-6">
         <h1 className="text-5xl font-bold text-center mb-12 text-green-900">General Engineering Division</h1>
         <p className="text-xl text-center text-gray-600 max-w-4xl mx-auto mb-16">

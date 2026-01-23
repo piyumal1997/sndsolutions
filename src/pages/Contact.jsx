@@ -1,4 +1,4 @@
-// src/pages/Contact.jsx (Light/White Theme with Sectioned Layout)
+// src/pages/Contact.jsx (Updated: Map and Contact Details/Form side-by-side on desktop, stacked with form first on mobile, all relevant section backgrounds white)
 import { useState, useEffect, useRef } from 'react';
 import { company } from '../data/company';
 
@@ -56,10 +56,9 @@ const Contact = () => {
   };
 
   return (
-    <main className="pt-28">
+    <main className="pt-0">
       {/* Hero Section - Light Theme */}
       <section className="relative h-70 bg-gradient-to-r from-green-700 to-emerald-700 flex items-center justify-center">
-        {/* <div className="absolute inset-0 bg-white/60"></div> */}
         <div className="container mx-auto px-6 z-10 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 text-white">Contact Us</h1>
           <p className="text-xl max-w-2xl mx-auto text-white">
@@ -68,123 +67,127 @@ const Contact = () => {
         </div>
       </section>
 
-      {/* Google Map Section - White Background */}
-      <section className="py-20 bg-gray-50">
+      {/* Combined Map + Contact Section - Pure White Background */}
+      <section className="py-20 lg:py-15 bg-white">
         <div className="container mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-900">Our Location</h2>
+          <div className="flex flex-col md:flex-row gap-6 lg:gap-10 max-w-8xl mx-auto">
+            {/* Contact Details & Form - First on mobile, right column on desktop */}
+            <div className="w-full order-1 md:order-2 flex flex-col justify-center">
+              {/* <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-900">Get in Touch</h2> */}
 
-          <div ref={mapRef} className="rounded-xl overflow-hidden shadow-2xl h-96 lg:h-[500px] relative mx-auto max-w-5xl bg-white">
-            {!mapSrc ? (
-              <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-600">
-                <p className="text-xl">Map will load automatically when you scroll here</p>
-              </div>
-            ) : (
-              <>
-                <iframe
-                  src={mapSrc}
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  allowFullScreen=""
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Our Location - Google Maps"
-                  onLoad={handleMapLoad}
-                />
+              <div className="space-y-12 lg:space-y-8">
+                {/* Contact Details */}
+                <div className="text-lg bg-white rounded-xl p-8 space-y-3 shadow-lg border border-gray-100">
+                  <p className="flex items-start gap-2">
+                    <span className="text-xl font-bold text-black">{company.name}</span>
+                  </p>
+                  <p className="flex items-start gap-2">
+                    <span className="text-black">{company.address}</span>
+                  </p>
 
-                {!mapLoaded && (
-                  <div className="absolute inset-0 bg-white/80 flex items-center justify-center z-10">
-                    <div className="text-center">
-                      <svg className="animate-spin h-12 w-12 text-green-600 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      <p className="text-lg text-gray-700">Loading map...</p>
+                  <p className="flex items-center gap-2">
+                    <span className="text-red-500">
+                      Tel : <a href={`tel:${company.phone.replace(/\s/g, '')}`} className="hover:text-gray-800 transition">{company.phone}</a>
+                    </span>
+                  </p>
+
+                  <p className="flex items-center gap-2">
+                    <span className="text-black">
+                      Email : <a href={`mailto:${company.email}`} className="hover:text-gray-800 transition">{company.email}</a>
+                    </span>
+                  </p>
+                </div>
+
+                {/* Form or Success Message */}
+                <div>
+                  {!success ? (
+                    <form onSubmit={handleSubmit} className="bg-white rounded-xl p-8 space-y-6 shadow-lg border border-gray-100">
+                      <input
+                        type="text"
+                        placeholder="Your Name *"
+                        required
+                        className="w-full px-6 py-4 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:border-green-600 focus:outline-none transition"
+                      />
+                      <input
+                        type="email"
+                        placeholder="Your Email *"
+                        required
+                        className="w-full px-6 py-4 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:border-green-600 focus:outline-none transition"
+                      />
+                      <input
+                        type="tel"
+                        placeholder="Your Phone"
+                        className="w-full px-6 py-4 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:border-green-600 focus:outline-none transition"
+                      />
+                      <select className="w-full px-6 py-4 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 focus:border-green-600 focus:outline-none transition">
+                        <option>Select Inquiry Type *</option>
+                        <option>Home Solar Solutions</option>
+                        <option>Industry Solar Solutions</option>
+                        <option>Automation & Control Systems</option>
+                        <option>General Engineering</option>
+                        <option>Other</option>
+                      </select>
+                      <textarea
+                        rows="5"
+                        placeholder="Your Message *"
+                        required
+                        className="w-full px-6 py-4 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:border-green-600 focus:outline-none transition resize-none"
+                      ></textarea>
+                      <button
+                        type="submit"
+                        className="w-full bg-green-600 text-white py-4 rounded-lg font-medium text-lg hover:bg-green-700 transition"
+                      >
+                        Send Message
+                      </button>
+                    </form>
+                  ) : (
+                    <div className="bg-green-50 border border-green-200 rounded-xl p-12 text-center shadow-lg">
+                      <FontAwesomeIcon icon={faCheckCircle} className="text-green-600 text-6xl mb-4" />
+                      <h3 className="text-3xl font-bold text-green-700 mb-4">Thank You!</h3>
+                      <p className="text-xl text-gray-700">Your inquiry has been sent. We'll respond within 24 hours.</p>
                     </div>
-                  </div>
-                )}
-              </>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* Contact Details & Form Section - White Background */}
-      <section className="py-20 bg-gradient-to-r from-green-100 to-emerald-50">
-        <div className="container mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-900">Get in Touch</h2>
-
-          <div className="grid md:grid-cols-2 gap-12 max-w-5xl mx-auto">
-            <div className="space-y-8">
-              <div className="space-y-6 text-lg">
-                {/* Address */}
-                <p className="flex items-center gap-4">
-                  <FontAwesomeIcon icon={faLocationDot} className="text-green-600 text-3xl" />
-                  <span className="text-gray-700 font-bold">{company.address}</span>
-                </p>
-
-                {/* Phone */}
-                <p className="flex items-center gap-4">
-                  <FontAwesomeIcon icon={faPhone} className="text-green-600 text-3xl" />
-                  <span className="text-gray-700 font-bold">{company.phone}</span>
-                </p>
-
-                {/* Email */}
-                <p className="flex items-center gap-4">
-                  <FontAwesomeIcon icon={faEnvelope} className="text-green-600 text-3xl" />
-                  <span className="text-gray-700 font-bold">{company.email}</span>
-                </p>
+                  )}
+                </div>
               </div>
             </div>
 
-            <div>
-              {!success ? (
-                <form onSubmit={handleSubmit} className="bg-gray-50/60 backdrop-blur-sm rounded-xl p-8 space-y-6 shadow-lg">
-                  <input
-                    type="text"
-                    placeholder="Your Name *"
-                    required
-                    className="w-full px-6 py-4 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:border-green-600 focus:outline-none transition"
-                  />
-                  <input
-                    type="email"
-                    placeholder="Your Email *"
-                    required
-                    className="w-full px-6 py-4 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:border-green-600 focus:outline-none transition"
-                  />
-                  <input
-                    type="tel"
-                    placeholder="Your Phone"
-                    className="w-full px-6 py-4 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:border-green-600 focus:outline-none transition"
-                  />
-                  <select className="w-full px-6 py-4 bg-white border border-gray-300 rounded-lg text-gray-900 focus:border-green-600 focus:outline-none transition">
-                    <option>Select Inquiry Type *</option>
-                    <option>Home Solar Solutions</option>
-                    <option>Industry Solar Solutions</option>
-                    <option>Automation & Control Systems</option>
-                    <option>General Engineering</option>
-                    <option>Other</option>
-                  </select>
-                  <textarea
-                    rows="5"
-                    placeholder="Your Message *"
-                    required
-                    className="w-full px-6 py-4 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:border-green-600 focus:outline-none transition resize-none"
-                  ></textarea>
-                  <button
-                    type="submit"
-                    className="w-full bg-green-600 text-white py-4 rounded-lg font-medium text-lg hover:bg-green-700 transition"
-                  >
-                    Send Message
-                  </button>
-                </form>
-              ) : (
-                <div className="bg-green-50 rounded-xl p-12 text-center shadow-lg">
-                  <FontAwesomeIcon icon={faCheckCircle} className="text-green-600 text-6xl mb-4" />
-                  <h3 className="text-3xl font-bold text-green-700 mb-4">Thank You!</h3>
-                  <p className="text-xl text-gray-700">Your inquiry has been sent. We'll respond within 24 hours.</p>
-                </div>
-              )}
+            {/* Google Map - Second on mobile, left column on desktop */}
+            <div className="w-full order-2 md:order-1">
+              {/* <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-900">Our Location</h2> */}
+
+              <div ref={mapRef} className="rounded-xl overflow-hidden shadow-2xl h-96 md:h-[550px] lg:h-[650px] relative bg-white">
+                {!mapSrc ? (
+                  <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-600">
+                    <p className="text-xl">Map will load automatically when you scroll here</p>
+                  </div>
+                ) : (
+                  <>
+                    <iframe
+                      src={mapSrc}
+                      width="100%"
+                      height="100%"
+                      style={{ border: 0 }}
+                      allowFullScreen=""
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                      title="Our Location - Google Maps"
+                      onLoad={handleMapLoad}
+                    />
+
+                    {!mapLoaded && (
+                      <div className="absolute inset-0 bg-white/80 flex items-center justify-center z-10">
+                        <div className="text-center">
+                          <svg className="animate-spin h-12 w-12 text-green-600 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          <p className="text-lg text-gray-700">Loading map...</p>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
             </div>
           </div>
         </div>

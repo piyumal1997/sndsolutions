@@ -1,7 +1,7 @@
 import React from 'react';
 
 const SolarHome = () => (
-  <section className="pt-32 py-20">
+  <section className="py-20">
     <div className="container mx-auto px-6">
       <h1 className="text-5xl font-bold text-center mb-12">Home / Residential Solar Solutions</h1>
       <p className="text-xl max-w-4xl mx-auto text-center mb-16">

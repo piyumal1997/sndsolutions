@@ -2,6 +2,8 @@ import { faSolarPanel, faMicrochip, faIndustry } from '@fortawesome/free-solid-s
 
 //Images
 import solar from '../assets/images/solar.jpg';
+import automation from '../assets/images/automation.jpg';
+import heavyeng from '../assets/images/heavyeng.jpg';
 
 
 export const divisions = [
@@ -19,7 +21,7 @@ export const divisions = [
     title: 'Advanced Engineering',
     subtitle: 'Smart Industrial Technologies',
     description: 'Industry 4.0, PLC/SCADA, IoT solutions.',
-    image: 'https://images.unsplash.com/photo-1581093450021-4a7360e9a6b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80',
+    image: [automation],
     link: '/automation',
     icon: faMicrochip
   },
@@ -28,7 +30,7 @@ export const divisions = [
     title: 'Heavy and General Engineering',
     subtitle: 'Reliable Engineering Services',
     description: 'Fabrication, maintenance, and structural works.',
-    image: 'https://images.unsplash.com/photo-1581092160607-36e2b9fd435d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80',
+    image: [heavyeng],
     link: '/engineering',
     icon: faIndustry
   }

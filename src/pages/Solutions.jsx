@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const Solutions = () => {
   return (
-    <main className="pt-28 bg-white">
+    <main className="pt-0 bg-white">
       {/* Hero Section */}
       <section className="relative h-70 bg-gradient-to-r from-green-700 to-emerald-700 flex items-center justify-center">
         {/* <div className="absolute inset-0 bg-white/60"></div> */}

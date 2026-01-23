@@ -59,7 +59,7 @@ const About = () => {
   ];
 
   return (
-    <main className="pt-28">
+    <main className="pt-0">
       {/* Hero Section */}
       <section className="relative h-70 bg-gradient-to-r from-green-700 to-emerald-700 flex items-center justify-center">
         {/* <div className="absolute inset-0 bg-black/40"></div> */}
