@@ -5,6 +5,10 @@ export const company = {
   phone: "+94 77 123 4567",
   email: "info@sndsolutions.lk",
   address: "No. 123, Main Road, Colombo 03, Sri Lanka",
+  location: {
+    lat: 6.9271,
+    lng: 79.8612
+  },
   logo: [companylogo],
   social: {
     facebook: "#",
