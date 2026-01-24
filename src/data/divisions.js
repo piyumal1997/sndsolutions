@@ -20,30 +20,40 @@ export const divisions = [
         id: 1,
         title: 'Home / Residential Solar Solutions',
         description: 'We offer 5–20 kW on-grid, off-grid, and hybrid rooftop systems, complete with battery storage and expert after-sales service.',
-        details: [
-                  "Residential Rooftop Systems (5 kW, 10 kW, 20 kW)",
-                  "On-grid, Off-grid, and Hybrid Solutions",
-                  "High-Performance Battery Energy Storage",
-                  "End-to-End Design, Installation, and Commissioning",
-                  "Professional After-Sales: Cleaning, Inspection, and Repair"
-                ]
+        services: [
+          "Residential Rooftop Systems (5 kW, 10 kW, 20 kW)",
+          "On-grid, Off-grid, and Hybrid Solutions",
+          "High-Performance Battery Energy Storage",
+          "End-to-End Design, Installation, and Commissioning",
+          "Professional After-Sales: Cleaning, Inspection, and Repair"
+        ]
       },
       {
         id: 2,
         title: 'Industry Solar Solutions', 
         description: 'Customized large-scale and hybrid installations for factories and commercial buildings.',
-        details: [
-                  "Infrastructure & Design: We specialize in the engineering and deployment of large-scale rooftop and ground-mounted arrays, utilizing bespoke designs specifically optimized for the structural and energy requirements of factories, warehouses, and commercial facilities. Our technical expertise extends to advanced hybrid configurations, ensuring seamless integration with existing power grids or independent operation.",
-                  "Strategic Value & Sustainability : Our industrial solar solutions are a strategic investment designed to substantially mitigate escalating operational costs and shield businesses from energy price volatility. By implementing high-efficiency photovoltaic infrastructure, we empower organizations to achieve their ESG (Environmental, Social, and Governance) targets and demonstrate a clear commitment to corporate sustainability."
-                ]
+        services: [
+          "Infrastructure & Design: We specialize in the engineering and deployment of large-scale rooftop and ground-mounted arrays, utilizing bespoke designs specifically optimized for the structural and energy requirements of factories, warehouses, and commercial facilities. Our technical expertise extends to advanced hybrid configurations, ensuring seamless integration with existing power grids or independent operation.",
+          "Strategic Value & Sustainability : Our industrial solar solutions are a strategic investment designed to substantially mitigate escalating operational costs and shield businesses from energy price volatility. By implementing high-efficiency photovoltaic infrastructure, we empower organizations to achieve their ESG (Environmental, Social, and Governance) targets and demonstrate a clear commitment to corporate sustainability."
+        ]
       }
     ]
   },
   {
     id: 2,
-    title: 'Advanced Engineering',
+    title: 'Advanced Engineering & Automation',
     subtitle: 'Smart Industrial Technologies',
     description: 'Industry 4.0, PLC/SCADA, IoT solutions.',
+    details:'The Advanced Engineering & Automation Division at S & D Solutions (Pvt) Ltd accelerates digital transformation by integrating Industry 4.0 paradigms into the industrial landscape. We empower organizations to achieve heightened productivity and resource optimization through the strategic deployment of PLC, SCADA, and IoT solutions. By synthesizing intelligent automation with precision engineering, we ensure operational excellence and future-proofed industrial growth.',
+    services: [
+      "Precision thermal management for high-demand industrial applications.",
+      "Integrated automation frameworks featuring PLC, SCADA, and intelligent controls.",
+      "Bespoke product development and custom machinery engineering.",
+      "Industry 4.0 ecosystems: IoT integration and real-time data monitoring.",
+      "Strategic process optimization and energy-efficient system integration."
+    ],
+    
+    
     image: [automation],
     link: '/automation',
     icon: faMicrochip
@@ -53,6 +63,14 @@ export const divisions = [
     title: 'Heavy and General Engineering',
     subtitle: 'Reliable Engineering Services',
     description: 'Fabrication, maintenance, and structural works.',
+    details: 'The Heavy & General Engineering Division at S & D Solutions (Pvt) Ltd. delivers precision-engineered, scalable solutions across the industrial and infrastructure sectors. Anchored by a commitment to technical excellence and rigorous safety standards, we provide cost-effective, high-performance engineering tailored to optimize operational lifecycle and efficiency.',
+    services: [
+    "Precision mechanical fabrication and turnkey installation services.",
+    "Industrial utility systems, specialized piping, and structural engineering.",
+    "Asset maintenance and integrated plant support to ensure operational uptime.",
+    "Bespoke machinery modification, refurbishment, and repair.",
+    "Technical advisory and dedicated on-site engineering support."
+  ],
     image: [heavyeng],
     link: '/engineering',
     icon: faIndustry

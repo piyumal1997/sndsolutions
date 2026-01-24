@@ -30,9 +30,9 @@ const Calculator = () => {
 
   return (
     <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12">
-      <h3 className="text-3xl font-bold text-center mb-8 text-green-900">Solar Savings Calculator</h3>
+      <h3 className="text-3xl font-semibold text-center mb-10 text-green-900">Solar Savings Calculator</h3>
       <div className="grid md:grid-cols-2 gap-10 items-end">
-        <div>
+        <div className="self-start">
           <label className="block text-lg font-medium mb-2">Average Monthly Electricity Bill (LKR)</label>
           <input
             type="number"
@@ -43,7 +43,7 @@ const Calculator = () => {
           />
         </div>
         {results && (
-          <div className="bg-green-100 p-6 rounded-xl">
+          <div className="bg-green-100 p-6 self-start rounded-xl">
             <p className="text-2xl font-bold text-green-800">Recommended System: {results.systemKW} kW</p>
             <p className="text-lg mt-2">Monthly Savings: Rs. {results.monthlySavings.toLocaleString()}</p>
             <p className="text-lg">Annual Savings: Rs. {results.annualSavings.toLocaleString()}</p>

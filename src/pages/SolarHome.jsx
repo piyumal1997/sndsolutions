@@ -9,11 +9,11 @@ const SolarHome = () => (
         Our Services Include:
       </p>
       <ul className="text-xl max-w-4xl mx-auto text-left mb-16">
-        <li>{divisions[0].subdivisions[0].details[0]}</li>
-        <li>{divisions[0].subdivisions[0].details[1]}</li>
-        <li>{divisions[0].subdivisions[0].details[2]}</li>
-        <li>{divisions[0].subdivisions[0].details[3]}</li>
-        <li>{divisions[0].subdivisions[0].details[4]}</li>
+        <li>{divisions[0].subdivisions[0].services[0]}</li>
+        <li>{divisions[0].subdivisions[0].services[1]}</li>
+        <li>{divisions[0].subdivisions[0].services[2]}</li>
+        <li>{divisions[0].subdivisions[0].services[3]}</li>
+        <li>{divisions[0].subdivisions[0].services[4]}</li>
       </ul>
       {/* Add images, testimonials, etc. */}
     </div>

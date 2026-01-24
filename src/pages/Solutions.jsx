@@ -57,7 +57,7 @@ const Solutions = () => {
           </p>
           <Link
             to="/contact"
-            className="inline-block bg-green-600 text-white px-8 py-4 rounded-lg font-medium text-lg hover:bg-green-700 transition"
+            className="inline-block bg-green-600 text-white px-8 py-4 rounded-full font-medium text-lg hover:bg-green-700 shadow-md transition"
           >
             Get in Touch
           </Link>

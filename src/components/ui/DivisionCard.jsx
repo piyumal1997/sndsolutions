@@ -7,7 +7,6 @@ const DivisionCard = ({ division }) => {
       <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${division.image})` }}></div>
       <div className="absolute inset-0 bg-black/50 hover:bg-black/40 transition flex items-center justify-center text-white text-center p-8">
         <div>
-          <FontAwesomeIcon icon={division.icon} className="text-6xl mb-4" />
           <h3 className="text-3xl font-bold mb-2">{division.title}</h3>
           <p className="text-xl">{division.subtitle}</p>
         </div>

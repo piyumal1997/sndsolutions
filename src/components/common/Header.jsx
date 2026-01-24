@@ -3,7 +3,7 @@ import { useState, useRef, useLayoutEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSun, faPhoneAlt, faEnvelope, faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { faFacebookF, faInstagram, faTiktok } from '@fortawesome/free-brands-svg-icons';
+import { faFacebookF, faInstagram, faLinkedinIn, faTiktok } from '@fortawesome/free-brands-svg-icons';
 import { company } from '../../data/company';
 
 const Header = () => {
@@ -58,6 +58,9 @@ const Header = () => {
             <a href={company.social.instagram} aria-label="Instagram" className="hover:text-white transition">
               <FontAwesomeIcon icon={faInstagram} className="text-xl" />
             </a>
+            <a href={company.social.linkedin} aria-label="LinkedIn" className="hover:text-white transition">
+              <FontAwesomeIcon icon={faLinkedinIn} className="text-xl" />
+            </a>
             <a href={company.social.tiktok} aria-label="TikTok" className="hover:text-white transition">
               <FontAwesomeIcon icon={faTiktok} className="text-xl" />
             </a>
@@ -76,13 +79,13 @@ const Header = () => {
             <img
               src={company.logo}
               alt={`${company.name} logo`}
-              className="h-10 md:h-14 w-auto object-contain"
+              className="h-10 md:h-12 w-auto object-contain"
             />
             {/* Optional: Show company name beside logo on larger screens */}
             {/* <h1 className="hidden md:block text-xl md:text-2xl font-bold text-gray-900">{company.name}</h1> */}
           </NavLink>
 
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden text-lg md:flex items-center gap-8">
             <NavLink
               to="/"
               className={({ isActive }) =>
@@ -137,7 +140,7 @@ const Header = () => {
 
           <a
             href="/contact"
-            className="hidden md:block bg-green-600 text-white px-5 py-2.5 rounded-full font-medium hover:bg-green-700 transition shadow-md"
+            className="hidden md:block bg-green-600 text-white text-md px-5 py-2.5 rounded-full font-medium hover:bg-green-700 transition shadow-md"
           >
             Get Quote
           </a>
