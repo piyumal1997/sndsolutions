@@ -8,8 +8,11 @@ const SolarIndustry = () => {
       <div className="container mx-auto px-6">
         <h1 className="text-5xl font-bold text-center mb-12 text-green-900">{divisions[0].subdivisions[1].title}</h1>
         <p className="text-xl text-justify text-gray-600 max-w-4xl mx-auto mb-16">
-          {divisions[0].subdivisions[1].services[0]}<br />
-          {divisions[0].subdivisions[1].services[1]}<br />
+          {divisions[0].subdivisions[1].services.map((service, index) => (
+                  <p key={index} className="text-xl max-w-4xl mx-auto text-left mb-4">
+                    {service}<br/>
+                  </p>
+                ))}
         </p>
         {/* Add more content, images, case studies if needed */}
         <div className="text-center">

@@ -1,13 +1,15 @@
-// src/components/common/Header.jsx
+// src/components/common/Header.jsx (Updated – Hardcoded Paths for Divisions/Subdivisions)
 import { useState, useRef, useLayoutEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSun, faPhoneAlt, faEnvelope, faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faSun, faPhoneAlt, faEnvelope, faBars, faTimes, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { faFacebookF, faInstagram, faLinkedinIn, faTiktok } from '@fortawesome/free-brands-svg-icons';
 import { company } from '../../data/company';
+import { divisions } from '../../data/divisions';
 
 const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false); // For desktop dropdown
   const topBarRef = useRef(null);
   const headerRef = useRef(null);
   const [headerTop, setHeaderTop] = useState(60);
@@ -31,6 +33,31 @@ const Header = () => {
     window.addEventListener('resize', updateHeights);
     return () => window.removeEventListener('resize', updateHeights);
   }, []);
+
+  // Hardcode paths based on division titles (update if your titles differ)
+  const getDivisionPath = (title) => {
+    switch (title) {
+      case 'Solar & Energy Systems':
+        return '/solar-energy';
+      case 'Advanced Engineering & Automation':
+        return '/automation';
+      case 'Heavy and General Engineering':
+        return '/engineering';
+      default:
+        return '/solutions'; // Fallback
+    }
+  };
+
+  const getSubdivisionPath = (title) => {
+    switch (title) {
+      case 'Home / Residential Solar Solutions':
+        return '/solar-home';
+      case 'Industry Solar Solutions':
+        return '/solar-industry';
+      default:
+        return '/solar-energy'; // Fallback
+    }
+  };
 
   return (
     <>
@@ -81,8 +108,6 @@ const Header = () => {
               alt={`${company.name} logo`}
               className="h-10 md:h-12 w-auto object-contain"
             />
-            {/* Optional: Show company name beside logo on larger screens */}
-            {/* <h1 className="hidden md:block text-xl md:text-2xl font-bold text-gray-900">{company.name}</h1> */}
           </NavLink>
 
           <nav className="hidden text-lg md:flex items-center gap-8">
@@ -96,16 +121,51 @@ const Header = () => {
             >
               Home
             </NavLink>
-            <NavLink
-              to="/solutions"
-              className={({ isActive }) =>
-                isActive
-                  ? "text-green-600 font-semibold"
-                  : "text-gray-700 hover:text-green-600 font-medium transition"
-              }
+
+            {/* Solutions Dropdown */}
+            <div 
+              className="relative"
+              onMouseEnter={() => setDropdownOpen(true)}
+              onMouseLeave={() => setDropdownOpen(false)}
             >
-              Solutions
-            </NavLink>
+              <button 
+                className={`text-gray-700 hover:text-green-600 font-medium transition flex items-center gap-1 ${dropdownOpen ? 'text-green-600' : ''}`}
+              >
+                Solutions
+                <FontAwesomeIcon icon={faChevronDown} className="text-sm" />
+              </button>
+              {dropdownOpen && (
+                <div className="absolute left-0 top-full mt-0 bg-white shadow-lg rounded-lg py-2 w-84 z-50">
+                  {divisions.map((division) => (
+                    <div key={division.id} className="relative">
+                      <NavLink
+                        to={getDivisionPath(division.title)}
+                        className="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-green-600 transition"
+                        onClick={() => setDropdownOpen(false)}
+                      >
+                        {division.title}
+                      </NavLink>
+                      {/* Submenu for Solar */}
+                      {division.title === 'Solar & Energy Systems' && division.subdivisions && (
+                        <div className="ml-4 border-l-2 border-gray-200">
+                          {division.subdivisions.map((sub, index) => (
+                            <NavLink
+                              key={index}
+                              to={getSubdivisionPath(sub.title)}
+                              className="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 hover:text-green-600 transition"
+                              onClick={() => setDropdownOpen(false)}
+                            >
+                              {sub.title}
+                            </NavLink>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
             <NavLink
               to="/projects"
               className={({ isActive }) =>
@@ -157,9 +217,46 @@ const Header = () => {
               <NavLink to="/" onClick={() => setMobileOpen(false)} className="text-gray-700 hover:text-green-600 font-medium py-2">
                 Home
               </NavLink>
-              <NavLink to="/solutions" onClick={() => setMobileOpen(false)} className="text-gray-700 hover:text-green-600 font-medium py-2">
+
+              {/* Mobile Solutions Accordion */}
+              <button 
+                onClick={() => setDropdownOpen(!dropdownOpen)} 
+                className="text-gray-700 hover:text-green-600 font-medium py-2 text-left flex justify-between items-center"
+              >
                 Solutions
-              </NavLink>
+                <FontAwesomeIcon icon={faChevronDown} className={`text-sm transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+              {dropdownOpen && (
+                <div className="flex flex-col gap-2 pl-4">
+                  {divisions.map((division) => (
+                    <div key={division.id}>
+                      <NavLink
+                        to={getDivisionPath(division.title)}
+                        className="block text-gray-700 hover:text-green-600 transition py-1"
+                        onClick={() => setMobileOpen(false)}
+                      >
+                        {division.title}
+                      </NavLink>
+                      {/* Submenu for Solar */}
+                      {division.title === 'Solar & Energy Systems' && division.subdivisions && (
+                        <div className="pl-4">
+                          {division.subdivisions.map((sub, index) => (
+                            <NavLink
+                              key={index}
+                              to={getSubdivisionPath(sub.title)}
+                              className="block text-sm text-gray-600 hover:text-green-600 transition py-1"
+                              onClick={() => setMobileOpen(false)}
+                            >
+                              {sub.title}
+                            </NavLink>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+
               <NavLink to="/projects" onClick={() => setMobileOpen(false)} className="text-gray-700 hover:text-green-600 font-medium py-2">
                 Projects
               </NavLink>

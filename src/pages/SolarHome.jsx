@@ -8,13 +8,11 @@ const SolarHome = () => (
       <p className="text-2xl max-w-4xl mx-auto text-left mb-6">
         Our Services Include:
       </p>
-      <ul className="text-xl max-w-4xl mx-auto text-left mb-16">
-        <li>{divisions[0].subdivisions[0].services[0]}</li>
-        <li>{divisions[0].subdivisions[0].services[1]}</li>
-        <li>{divisions[0].subdivisions[0].services[2]}</li>
-        <li>{divisions[0].subdivisions[0].services[3]}</li>
-        <li>{divisions[0].subdivisions[0].services[4]}</li>
-      </ul>
+      {divisions[0].subdivisions[0].services.map((service, index) => (
+        <p key={index} className="text-xl max-w-4xl mx-auto text-left mb-4">
+          • {service}
+        </p>
+      ))}
       {/* Add images, testimonials, etc. */}
     </div>
   </section>

@@ -15,6 +15,7 @@ export const divisions = [
     image: [solar],
     link: '/solar-energy',
     icon: faSolarPanel,
+    path: "/solar-energy",
     subdivisions: [
       {
         id: 1,
@@ -26,7 +27,8 @@ export const divisions = [
           "High-Performance Battery Energy Storage",
           "End-to-End Design, Installation, and Commissioning",
           "Professional After-Sales: Cleaning, Inspection, and Repair"
-        ]
+        ],
+        path: "/solar-home",
       },
       {
         id: 2,
@@ -35,7 +37,8 @@ export const divisions = [
         services: [
           "Infrastructure & Design: We specialize in the engineering and deployment of large-scale rooftop and ground-mounted arrays, utilizing bespoke designs specifically optimized for the structural and energy requirements of factories, warehouses, and commercial facilities. Our technical expertise extends to advanced hybrid configurations, ensuring seamless integration with existing power grids or independent operation.",
           "Strategic Value & Sustainability : Our industrial solar solutions are a strategic investment designed to substantially mitigate escalating operational costs and shield businesses from energy price volatility. By implementing high-efficiency photovoltaic infrastructure, we empower organizations to achieve their ESG (Environmental, Social, and Governance) targets and demonstrate a clear commitment to corporate sustainability."
-        ]
+        ],
+        path: "/solar-industry",
       }
     ]
   },
@@ -52,8 +55,7 @@ export const divisions = [
       "Industry 4.0 ecosystems: IoT integration and real-time data monitoring.",
       "Strategic process optimization and energy-efficient system integration."
     ],
-    
-    
+    path: "/automation",
     image: [automation],
     link: '/automation',
     icon: faMicrochip
@@ -65,12 +67,13 @@ export const divisions = [
     description: 'Fabrication, maintenance, and structural works.',
     details: 'The Heavy & General Engineering Division at S & D Solutions (Pvt) Ltd. delivers precision-engineered, scalable solutions across the industrial and infrastructure sectors. Anchored by a commitment to technical excellence and rigorous safety standards, we provide cost-effective, high-performance engineering tailored to optimize operational lifecycle and efficiency.',
     services: [
-    "Precision mechanical fabrication and turnkey installation services.",
-    "Industrial utility systems, specialized piping, and structural engineering.",
-    "Asset maintenance and integrated plant support to ensure operational uptime.",
-    "Bespoke machinery modification, refurbishment, and repair.",
-    "Technical advisory and dedicated on-site engineering support."
-  ],
+      "Precision mechanical fabrication and turnkey installation services.",
+      "Industrial utility systems, specialized piping, and structural engineering.",
+      "Asset maintenance and integrated plant support to ensure operational uptime.",
+      "Bespoke machinery modification, refurbishment, and repair.",
+      "Technical advisory and dedicated on-site engineering support."
+    ],
+    path: "/engineering",
     image: [heavyeng],
     link: '/engineering',
     icon: faIndustry
