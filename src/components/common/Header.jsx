@@ -1,4 +1,4 @@
-// src/components/common/Header.jsx (Updated – Hardcoded Paths for Divisions/Subdivisions)
+// src/components/common/Header.jsx
 import { useState, useRef, useLayoutEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -128,12 +128,16 @@ const Header = () => {
               onMouseEnter={() => setDropdownOpen(true)}
               onMouseLeave={() => setDropdownOpen(false)}
             >
-              <button 
-                className={`text-gray-700 hover:text-green-600 font-medium transition flex items-center gap-1 ${dropdownOpen ? 'text-green-600' : ''}`}
+              <NavLink
+                to="/solutions"
+                className={({ isActive }) =>
+                  isActive
+                    ? "text-green-600 font-semibold"
+                    : "text-gray-700 hover:text-green-600 font-medium transition"
+                }
               >
                 Solutions
-                <FontAwesomeIcon icon={faChevronDown} className="text-sm" />
-              </button>
+              </NavLink>
               {dropdownOpen && (
                 <div className="absolute left-0 top-full mt-0 bg-white shadow-lg rounded-lg py-2 w-84 z-50">
                   {divisions.map((division) => (
@@ -218,44 +222,59 @@ const Header = () => {
                 Home
               </NavLink>
 
-              {/* Mobile Solutions Accordion */}
-              <button 
-                onClick={() => setDropdownOpen(!dropdownOpen)} 
-                className="text-gray-700 hover:text-green-600 font-medium py-2 text-left flex justify-between items-center"
-              >
-                Solutions
-                <FontAwesomeIcon icon={faChevronDown} className={`text-sm transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
-              </button>
-              {dropdownOpen && (
-                <div className="flex flex-col gap-2 pl-4">
-                  {divisions.map((division) => (
-                    <div key={division.id}>
-                      <NavLink
-                        to={getDivisionPath(division.title)}
-                        className="block text-gray-700 hover:text-green-600 transition py-1"
-                        onClick={() => setMobileOpen(false)}
-                      >
-                        {division.title}
-                      </NavLink>
-                      {/* Submenu for Solar */}
-                      {division.title === 'Solar & Energy Systems' && division.subdivisions && (
-                        <div className="pl-4">
-                          {division.subdivisions.map((sub, index) => (
-                            <NavLink
-                              key={index}
-                              to={getSubdivisionPath(sub.title)}
-                              className="block text-sm text-gray-600 hover:text-green-600 transition py-1"
-                              onClick={() => setMobileOpen(false)}
-                            >
-                              {sub.title}
-                            </NavLink>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  ))}
+              {/* Mobile Solutions Accordion - FIXED */}
+              <div className="flex flex-col">
+                <div className="flex justify-between items-center w-full">
+                  {/* The Link to /solutions */}
+                  <NavLink 
+                    to="/solutions" 
+                    onClick={() => setMobileOpen(false)} 
+                    className="text-gray-700 hover:text-green-600 font-medium py-2 flex-grow"
+                  >
+                    Solutions
+                  </NavLink>
+                  
+                  {/* The Dropdown Toggler Button */}
+                  <button 
+                    onClick={() => setDropdownOpen(!dropdownOpen)} 
+                    className="p-2 text-gray-700 hover:text-green-600 transition"
+                  >
+                    <FontAwesomeIcon icon={faChevronDown} className={`text-sm transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
+                  </button>
                 </div>
-              )}
+
+                {/* Dropdown Content */}
+                {dropdownOpen && (
+                  <div className="flex flex-col gap-2 pl-4 border-l-2 border-gray-100 ml-2 mb-2">
+                    {divisions.map((division) => (
+                      <div key={division.id}>
+                        <NavLink
+                          to={getDivisionPath(division.title)}
+                          className="block text-gray-700 hover:text-green-600 transition py-1"
+                          onClick={() => setMobileOpen(false)}
+                        >
+                          {division.title}
+                        </NavLink>
+                        {/* Submenu for Solar */}
+                        {division.title === 'Solar & Energy Systems' && division.subdivisions && (
+                          <div className="pl-4">
+                            {division.subdivisions.map((sub, index) => (
+                              <NavLink
+                                key={index}
+                                to={getSubdivisionPath(sub.title)}
+                                className="block text-sm text-gray-600 hover:text-green-600 transition py-1"
+                                onClick={() => setMobileOpen(false)}
+                              >
+                                {sub.title}
+                              </NavLink>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
 
               <NavLink to="/projects" onClick={() => setMobileOpen(false)} className="text-gray-700 hover:text-green-600 font-medium py-2">
                 Projects

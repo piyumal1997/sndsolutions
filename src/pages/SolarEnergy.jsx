@@ -1,4 +1,4 @@
-// src/pages/SolarEnergy.jsx (Updated – Hero Image Set Like Home.jsx)
+// src/pages/SolarEnergy.jsx (Updated – Uses SubDivisionCard for Sub Divisions)
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -7,6 +7,7 @@ import {
   faIndustry,
 } from '@fortawesome/free-solid-svg-icons';
 import Calculator from '../components/ui/Calculator';
+import SolarSubdivisionCard from '../components/ui/SolarSubdivisionCard';
 import { divisions } from '../data/divisions';
 
 import solarBg from '../assets/images/solar-bg.jpg'; 
@@ -44,26 +45,18 @@ const SolarEnergy = () => {
         </div>
       </section>
 
-      {/* Subdivisions */}
+      {/* Subdivisions – Now using SubDivisionCard */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-6">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-green-900">Our Solar Services</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {solarSubdivisions.map((subdivision, index) => (
-              <Link
+              <SolarSubdivisionCard
                 key={index}
+                subdivision={subdivision}
                 to={index === 0 ? '/solar-home' : '/solar-industry'}
-                className="bg-gray-50 rounded-xl shadow-md p-8 hover:shadow-lg transition duration-300 text-center block"
-              >
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-6 mx-auto">
-                  <FontAwesomeIcon 
-                    icon={index === 0 ? faHome : faIndustry} 
-                    className="text-green-600 text-3xl" 
-                  />
-                </div>
-                <h3 className="text-2xl font-bold mb-4 text-green-900">{subdivision.title}</h3>
-                <p className="text-gray-600">{subdivision.description}</p>
-              </Link>
+                icon={index === 0 ? faHome : faIndustry}
+              />
             ))}
           </div>
         </div>
