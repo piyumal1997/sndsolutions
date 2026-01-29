@@ -7,7 +7,7 @@ const Solutions = () => {
   return (
     <main className="pt-0 bg-white">
       {/* Hero Section */}
-      <section className="relative h-70 bg-gradient-to-r from-green-700 to-emerald-700 flex items-center justify-center">
+      <section className="relative h-84 bg-gradient-to-r from-green-700 to-emerald-700 flex items-center justify-center">
         <div className="container mx-auto px-6 z-10 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 text-white">
             Our Innovative & Sustainable Solutions

@@ -150,7 +150,7 @@ const ContactSupabaseInner = () => {
   return (
     <main className="pt-0">
       {/* Hero */}
-      <section className="relative h-64 sm:h-72 md:h-80 lg:h-70 bg-gradient-to-r from-green-700 to-emerald-700 flex items-center justify-center">
+      <section className="relative h-64 sm:h-72 md:h-80 lg:h-84 bg-gradient-to-r from-green-700 to-emerald-700 flex items-center justify-center">
         <div className="container mx-auto px-4 sm:px-6 text-center">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-white">Contact Us</h1>
           <p className="text-lg sm:text-xl max-w-2xl mx-auto text-white">

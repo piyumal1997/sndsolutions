@@ -18,7 +18,7 @@ const SolarEnergy = () => {
   return (
     <main className="pt-0">
       {/* Hero Section – Styled like Home.jsx */}
-      <section className="relative h-70 pt-0">
+      <section className="relative h-84 pt-0">
         <div 
           className="absolute inset-0 bg-cover bg-center bg-fixed" 
           style={{ backgroundImage: `url(${solarBg})` }} // Use imported image; fallback to URL if needed: 'url("https://thumbs.dreamstime.com/b/solar-panel-alternative-energy-rural-villages-thailand-solar-panel-palm-tree-silhouette-reflection-157102155.jpg")'

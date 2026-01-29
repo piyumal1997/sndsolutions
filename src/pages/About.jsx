@@ -61,7 +61,7 @@ const About = () => {
   return (
     <main className="pt-0">
       {/* Hero Section */}
-      <section className="relative h-70 bg-gradient-to-r from-green-700 to-emerald-700 flex items-center justify-center">
+      <section className="relative h-84 bg-gradient-to-r from-green-700 to-emerald-700 flex items-center justify-center">
         {/* <div className="absolute inset-0 bg-black/40"></div> */}
         <div className="container mx-auto px-6 z-10 text-center text-white">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">About S & D Solutions (Pvt) Ltd.</h1>

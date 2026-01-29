@@ -13,6 +13,7 @@ export const company = {
   social: {
     facebook: "#",
     instagram: "#",
-    tiktok: "#"
+    tiktok: "#",
+    linkedin: "#"
   }
 };

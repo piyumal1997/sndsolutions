@@ -13,7 +13,7 @@ const Automation = () => {
   return (
     <main className="pt-0">
       {/* Hero Section – Styled exactly like SolarEnergy.jsx */}
-      <section className="relative h-70 pt-0">
+      <section className="relative h-84 pt-0">
         <div 
           className="absolute inset-0 bg-cover bg-center bg-fixed" 
           style={{ backgroundImage: `url(${automationBg})` }}
