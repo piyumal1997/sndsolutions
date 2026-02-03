@@ -172,11 +172,11 @@ const ContactSupabaseInner = () => {
               <div className="space-y-6 md:space-y-8">
                 {/* Company Info */}
                 <div className="bg-white rounded-xl p-6 sm:p-8 shadow-lg border border-gray-100 space-y-4">
-                  <div className="flex justify-center mb-4">
+                  <div className="flex justify-center mb-8">
                     <img
                       src={company.logo}
                       alt={`${company.name} Logo`}
-                      className="h-12 sm:h-16 w-auto object-contain"
+                      className="h-16 sm:h-24 w-auto object-contain"
                     />
                   </div>
                   <p className="flex items-center gap-3">

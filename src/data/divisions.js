@@ -12,6 +12,7 @@ export const divisions = [
     title: 'Solar & Energy Systems',
     subtitle: 'Complete Solar Power Solutions',
     description: 'Focused on performance, reliability, and long-term savings.',
+    details: 'Delivering complete solar power solutions for homes, businesses, and industries focused on performance, reliability, and long-term savings.',
     image: [solar],
     link: '/solar-energy',
     icon: faSolarPanel,

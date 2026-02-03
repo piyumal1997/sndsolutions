@@ -1,14 +1,15 @@
-// src/pages/SolarEnergy.jsx (Updated – Uses SubDivisionCard for Sub Divisions)
+// src/pages/SolarEnergy.jsx (Updated – Uses SubDivisionCard for Sub Divisions with New Vertical Scrolling Partners Section)
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faSun,
   faHome,
   faIndustry,
 } from '@fortawesome/free-solid-svg-icons';
 import Calculator from '../components/ui/Calculator';
 import SolarSubdivisionCard from '../components/ui/SolarSubdivisionCard';
 import { divisions } from '../data/divisions';
+import { partners } from '../data/partners'; // New import for partner logos (create data/partners.js)
+
 
 import solarBg from '../assets/images/solar-bg.jpg'; 
 
@@ -26,9 +27,9 @@ const SolarEnergy = () => {
         <div className="absolute inset-0 bg-black/50"></div>
         <div className="relative container mx-auto px-6 h-full flex items-center justify-center text-center text-white">
           <div className="max-w-5xl">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 drop-shadow-2xl">Solar & Energy Systems Division</h1>
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 drop-shadow-2xl">{divisions[0]?.title || "Solar & Energy Systems"}</h1>
             <p className="text-xl md:text-2xl max-w-3xl mx-auto drop-shadow-md">
-              Delivering complete solar power solutions for homes, businesses, and industries focused on performance, reliability, and long-term savings.
+              {divisions[0]?.details || "Delivering complete solar power solutions for homes, businesses, and industries focused on performance, reliability, and long-term savings."}
             </p>
           </div>
         </div>
@@ -72,6 +73,28 @@ const SolarEnergy = () => {
           <p className="text-center text-gray-600 mt-8 max-w-2xl mx-auto">
             Estimate your potential savings with our interactive solar calculator. Input your details for a customized report.
           </p>
+        </div>
+      </section>
+
+      {/* New Bottom Section: Vertical Scrolling Partners Logos */}
+      <section className="py-16 bg-white border-t border-gray-200 overflow-hidden">
+        <div className="container mx-auto px-6 text-center">
+          <h2 className="text-3xl font-bold mb-12 text-green-900">Our Partners</h2>
+          
+          <div className="relative h-32 overflow-hidden"> {/* Fixed height for logos */}
+            <div className="absolute inset-0 flex animate-horizontal-scroll space-x-12 items-center"> {/* Adjust space-x for spacing */}
+              {/* Duplicate list for seamless infinite loop */}
+              {[...partners, ...partners].map((partner, index) => (
+                <div key={index} className="flex-shrink-0 w-40 h-20 flex items-center justify-center"> {/* Fixed size container */}
+                  <img 
+                    src={partner.logo} 
+                    alt={partner.name} 
+                    className="max-w-full max-h-full object-contain grayscale hover:grayscale-0 transition duration-300 opacity-80 hover:opacity-100"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
     </main>
