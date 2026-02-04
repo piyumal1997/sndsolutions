@@ -1,7 +1,6 @@
-// src/pages/About.jsx
+// src/pages/About.jsx (Updated & Complete – Nicer Vision & Mission Cards with Theme)
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom';
-
 import {
   faSun,
   faRobot,
@@ -9,9 +8,12 @@ import {
   faHelmetSafety,
   faMapMarkedAlt,
   faTrophy,
+  faEye,      // Vision icon
+  faBullseye, // Mission icon
 } from '@fortawesome/free-solid-svg-icons';
 
-import aboutBg from '../assets/images/about-bg.jpg'; // ← Add your background image here
+import aboutBg from '../assets/images/about-bg.jpg'; // Your background image
+import {company} from "../data/company"
 
 const About = () => {
   const divisions = [
@@ -64,11 +66,11 @@ const About = () => {
 
   return (
     <main className="pt-0 bg-white">
-      {/* Hero Section – Same style as SolarEnergy.jsx */}
+      {/* Hero Section */}
       <section className="relative h-84 pt-0">
         <div 
           className="absolute inset-0 bg-cover bg-center bg-fixed" 
-          style={{ backgroundImage: `url(${aboutBg})` }} // Replace with your actual image import
+          style={{ backgroundImage: `url(${aboutBg})` }}
         ></div>
         <div className="absolute inset-0 bg-black/50"></div>
         <div className="relative container mx-auto px-6 h-full flex items-center justify-center text-center text-white">
@@ -90,16 +92,47 @@ const About = () => {
             We specialize in innovative and sustainable development solutions across three major core sectors: <br />
             <span className="font-semibold text-green-700">Solar & Energy Systems</span>,{' '}
             <span className="font-semibold text-green-700">Advanced Engineering & Automation</span>, and{' '}
-            <span className="font-semibold text-green-700">General Engineering</span>.<br /><br />
+            <span className="font-semibold text-green-700">General Engineering</span>.<br />
             With over 15 years of excellence serving Sri Lanka, we are committed to quality, efficiency, and environmental responsibility.
           </p>
+        </div>
+      </section>
+
+      {/* Vision & Mission – Nicer Theme-Aligned Cards */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-6">
+          <div className="grid md:grid-cols-2 gap-10 max-w-6xl mx-auto">
+            {/* Vision Card */}
+            <div className="relative bg-gradient-to-br from-green-50 to-white rounded-3xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 group">
+              <div className="absolute inset-0 bg-gradient-to-t from-green-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="relative p-10 text-center">
+                <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-8 shadow-md">
+                  <FontAwesomeIcon icon={faEye} className="text-green-700 text-5xl" />
+                </div>
+                <h3 className="text-3xl font-bold text-green-900 mb-6">Our Vision</h3>
+                <p className="text-lg text-gray-700 leading-relaxed">{company.vision}</p>
+              </div>
+            </div>
+
+            {/* Mission Card */}
+            <div className="relative bg-gradient-to-br from-green-50 to-white rounded-3xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 group">
+              <div className="absolute inset-0 bg-gradient-to-t from-green-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="relative p-10 text-center">
+                <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-8 shadow-md">
+                  <FontAwesomeIcon icon={faBullseye} className="text-green-700 text-5xl" />
+                </div>
+                <h3 className="text-3xl font-bold text-green-900 mb-6">Our Mission</h3>
+                <p className="text-lg text-gray-700 leading-relaxed">{company.mission}</p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Core Divisions */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-6">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 text-green-900">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 text-green-900">
             Our Core Divisions
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-6xl mx-auto">
@@ -134,7 +167,7 @@ const About = () => {
       {/* Achievements */}
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-6">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 text-green-900">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 text-green-900">
             Our Achievements
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
@@ -158,7 +191,7 @@ const About = () => {
       {/* CTA Section */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-6 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900">
             Ready to Build a Sustainable Future Together?
           </h2>
           <p className="text-xl text-gray-700 max-w-3xl mx-auto mb-10">

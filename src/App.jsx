@@ -1,10 +1,16 @@
-import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
+// src/App.jsx
+import { 
+  createBrowserRouter, 
+  RouterProvider, 
+  Outlet,
+  ScrollRestoration,
+} from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import Header from './components/common/Header';
 import Footer from './components/common/Footer';
 import LoadingSpinner from './components/common/LoadingSpinner';
 
-// Lazy load pages – this triggers the spinner on navigation
+
 const Home = lazy(() => import('./pages/Home'));
 const Solutions = lazy(() => import('./pages/Solutions'));
 const SolarEnergy = lazy(() => import('./pages/SolarEnergy'));
@@ -17,20 +23,23 @@ const About = lazy(() => import('./pages/About'));
 const Contact = lazy(() => import('./pages/Contact'));
 const Admin = lazy(() => import('./pages/AdminDashboard'));
 
-// Shared Layout (Header + Footer on all pages)
 const Layout = () => (
   <>
     <Header />
     <main className="pt-[var(--total-header-height)]">
       <Suspense fallback={<LoadingSpinner />}>
         <Outlet />
+        <ScrollRestoration 
+          getKey={(location) => {
+            return location.pathname + location.search;
+          }}
+        />
       </Suspense>
     </main>
     <Footer />
   </>
 );
 
-// Router configuration
 const router = createBrowserRouter([
   {
     element: <Layout />,
