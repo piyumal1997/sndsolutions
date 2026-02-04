@@ -1,4 +1,4 @@
-// src/pages/About.jsx (Updated & Complete – Nicer Vision & Mission Cards with Theme)
+// src/pages/About.jsx (Fixed – Achievements Icons Now Display Correctly)
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom';
 import {
@@ -8,12 +8,23 @@ import {
   faHelmetSafety,
   faMapMarkedAlt,
   faTrophy,
-  faEye,      // Vision icon
-  faBullseye, // Mission icon
+  faEye,
+  faBullseye,
 } from '@fortawesome/free-solid-svg-icons';
 
-import aboutBg from '../assets/images/about-bg.jpg'; // Your background image
-import {company} from "../data/company"
+import aboutBg from '../assets/images/about-bg.jpg';
+import { company } from "../data/company";
+
+// Create a lookup map for icon strings → actual icon objects
+const iconMap = {
+  faSun: faSun,
+  faRobot: faRobot,
+  faGears: faGears,
+  faHelmetSafety: faHelmetSafety,
+  faMapMarkedAlt: faMapMarkedAlt,
+  faTrophy: faTrophy,
+  // Add more if you have other icons
+};
 
 const About = () => {
   const divisions = [
@@ -37,33 +48,6 @@ const About = () => {
     },
   ];
 
-  const achievements = [
-    {
-      id: 1,
-      value: "800+",
-      label: "Projects Completed",
-      icon: faHelmetSafety,
-    },
-    {
-      id: 2,
-      value: "80+ MW",
-      label: "Solar Capacity Installed",
-      icon: faSun,
-    },
-    {
-      id: 3,
-      value: "All Provinces",
-      label: "Island-Wide Coverage",
-      icon: faMapMarkedAlt,
-    },
-    {
-      id: 4,
-      value: "15+",
-      label: "Years of Excellence",
-      icon: faTrophy,
-    },
-  ];
-
   return (
     <main className="pt-0 bg-white">
       {/* Hero Section */}
@@ -76,7 +60,7 @@ const About = () => {
         <div className="relative container mx-auto px-6 h-full flex items-center justify-center text-center text-white">
           <div className="max-w-5xl">
             <h1 className="text-4xl md:text-6xl font-bold mb-6 drop-shadow-2xl">
-              About S & D Solutions (Pvt) Ltd.
+              About {company.name}
             </h1>
             <p className="text-xl md:text-2xl max-w-3xl mx-auto drop-shadow-md">
               Leading provider of sustainable energy and advanced engineering solutions across Sri Lanka
@@ -92,17 +76,17 @@ const About = () => {
             We specialize in innovative and sustainable development solutions across three major core sectors: <br />
             <span className="font-semibold text-green-700">Solar & Energy Systems</span>,{' '}
             <span className="font-semibold text-green-700">Advanced Engineering & Automation</span>, and{' '}
-            <span className="font-semibold text-green-700">General Engineering</span>.<br />
+            <span className="font-semibold text-green-700">General Engineering</span>.<br /><br />
             With over 15 years of excellence serving Sri Lanka, we are committed to quality, efficiency, and environmental responsibility.
           </p>
         </div>
       </section>
 
-      {/* Vision & Mission – Nicer Theme-Aligned Cards */}
+      {/* Vision & Mission */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-6">
           <div className="grid md:grid-cols-2 gap-10 max-w-6xl mx-auto">
-            {/* Vision Card */}
+            {/* Vision */}
             <div className="relative bg-gradient-to-br from-green-50 to-white rounded-3xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 group">
               <div className="absolute inset-0 bg-gradient-to-t from-green-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <div className="relative p-10 text-center">
@@ -114,7 +98,7 @@ const About = () => {
               </div>
             </div>
 
-            {/* Mission Card */}
+            {/* Mission */}
             <div className="relative bg-gradient-to-br from-green-50 to-white rounded-3xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 group">
               <div className="absolute inset-0 bg-gradient-to-t from-green-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <div className="relative p-10 text-center">
@@ -164,21 +148,25 @@ const About = () => {
         </div>
       </section>
 
-      {/* Achievements */}
+      {/* Achievements – Fixed Icons */}
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-6">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 text-green-900">
             Our Achievements
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
-            {achievements.map((ach) => (
+            {company.achievements.map((ach) => (
               <div 
                 key={ach.id} 
                 className="bg-white rounded-2xl shadow-lg p-8 text-center hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
                 data-aos="fade-up"
               >
                 <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <FontAwesomeIcon icon={ach.icon} className="text-green-600 text-4xl" />
+                  {/* Use the icon map to convert string → actual icon */}
+                  <FontAwesomeIcon 
+                    icon={iconMap[ach.icon]} 
+                    className="text-green-600 text-4xl" 
+                  />
                 </div>
                 <p className="text-4xl font-bold text-green-700 mb-2">{ach.value}</p>
                 <p className="text-gray-600 text-lg">{ach.label}</p>

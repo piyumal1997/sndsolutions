@@ -17,5 +17,31 @@ export const company = {
     instagram: "#",
     tiktok: "#",
     linkedin: "#"
-  }
+  }, 
+  achievements : [
+      {
+        id: 1,
+        value: "800+",
+        label: "Projects Completed",
+        icon: 'faHelmetSafety',
+      },
+      {
+        id: 2,
+        value: "80+ MW",
+        label: "Solar Capacity Installed",
+        icon: 'faSun',
+      },
+      {
+        id: 3,
+        value: "All Provinces",
+        label: "Island-Wide Coverage",
+        icon: 'faMapMarkedAlt',
+      },
+      {
+        id: 4,
+        value: "15+",
+        label: "Years of Excellence",
+        icon: 'faTrophy',
+      },
+    ]
 };
