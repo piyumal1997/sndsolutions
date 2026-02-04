@@ -180,7 +180,7 @@ const About = () => {
                 <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
                   <FontAwesomeIcon icon={ach.icon} className="text-green-600 text-4xl" />
                 </div>
-                <p className="text-5xl font-bold text-green-700 mb-2">{ach.value}</p>
+                <p className="text-4xl font-bold text-green-700 mb-2">{ach.value}</p>
                 <p className="text-gray-600 text-lg">{ach.label}</p>
               </div>
             ))}
