@@ -48,9 +48,10 @@ export const divisions = [
     title: 'Advanced Engineering & Automation',
     subtitle: 'Smart Industrial Technologies',
     description: 'Industry 4.0, PLC/SCADA, IoT solutions.',
-    details:'The Advanced Engineering & Automation Division at S & D Solutions (Pvt) Ltd accelerates digital transformation by integrating Industry 4.0 paradigms into the industrial landscape. We empower organizations to achieve heightened productivity and resource optimization through the strategic deployment of PLC, SCADA, and IoT solutions. By synthesizing intelligent automation with precision engineering, we ensure operational excellence and future-proofed industrial growth.',
+    details:'The Advanced Engineering & Automation Division at S & D Solutions (Pvt) Ltd accelerates digital transformation by integrating Industry 4.0 paradigms into the industrial landscape. We empower organizations to achieve heightened productivity, energy efficiency, and resource optimization through strategic deployment of PLC, SCADA, IoT, and advanced cooling solutions installation & commissioning for critical processes. By synthesizing intelligent automation with precision thermal management and engineering expertise, we ensure operational excellence and sustainable, future-proofed industrial growth.',
     services: [
       "Precision thermal management for high-demand industrial applications.",
+      "Advanced cooling solutions installation and commissioning for critical processes.",
       "Integrated automation frameworks featuring PLC, SCADA, and intelligent controls.",
       "Bespoke product development and custom machinery engineering.",
       "Industry 4.0 ecosystems: IoT integration and real-time data monitoring.",

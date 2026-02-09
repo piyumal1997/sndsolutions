@@ -22,6 +22,7 @@ const Projects = lazy(() => import('./pages/Projects'));
 const About = lazy(() => import('./pages/About'));
 const Contact = lazy(() => import('./pages/Contact'));
 const Admin = lazy(() => import('./pages/AdminDashboard'));
+const SolarCalculatorPage = lazy(() => import('./pages/SolarCalculatorPage'));
 
 const Layout = () => (
   <>
@@ -55,6 +56,7 @@ const router = createBrowserRouter([
       { path: "/about", element: <About /> },
       { path: "/contact", element: <Contact /> },
       { path: "/admin", element: <Admin /> },
+      { path: "/solar-calculator", element: <SolarCalculatorPage /> },
     ],
   },
 ]);
