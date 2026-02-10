@@ -12,7 +12,7 @@ import {
   faBullseye,
 } from '@fortawesome/free-solid-svg-icons';
 
-import aboutBg from '../assets/images/about-bg.jpg';
+import aboutBg from '../assets/images/background/about-bg.jpg';
 import { company } from "../data/company";
 
 // Create a lookup map for icon strings → actual icon objects

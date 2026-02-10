@@ -288,10 +288,11 @@ const SolarCalculator = () => {
           <li>System sized to fully offset your bill</li>
           <li>Fixed charges & connection fees ignored for simplicity</li>
         </ul>
-        <p className="mt-6 text-lg text-red-600 font-semibold">
+        
+        <p className="text-md font-semibold mt-4">
+          <span className="text-red-700">
           This is an estimate only.
-          </p>
-        <p className="text-lg font-semibold">
+          </span> {' '} 
            Actual costs, production, and suitability vary by provider, roof, and connection type.
         </p>
       </div>
