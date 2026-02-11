@@ -55,16 +55,16 @@ const Footer = () => {
           <div className="mt-4">
             <h3 className="text-lg md:text-xl font-bold mb-4">Follow Us</h3>
             <div className="flex gap-6">
-              <a href={company.social.facebook} aria-label="Facebook" className="text-gray-50 hover:text-green-300 transition">
+              <a href={company.social.facebook} aria-label="Facebook" className="text-gray-50 hover:text-green-300 transition" target="_blank">
                 <FontAwesomeIcon icon={faFacebookF} className="text-3xl" />
               </a>
-              <a href={company.social.instagram} aria-label="Instagram" className="text-gray-50 hover:text-green-300 transition">
+              <a href={company.social.instagram} aria-label="Instagram" className="text-gray-50 hover:text-green-300 transition" target="_blank">
                 <FontAwesomeIcon icon={faInstagram} className="text-3xl" />
               </a>
-              <a href={company.social.linkedin} aria-label="LinkedIn" className="text-gray-50 hover:text-green-300 transition">
+              <a href={company.social.linkedin} aria-label="LinkedIn" className="text-gray-50 hover:text-green-300 transition" target="_blank">
                 <FontAwesomeIcon icon={faLinkedinIn} className="text-3xl" />
               </a>
-              <a href={company.social.tiktok} aria-label="TikTok" className="text-gray-50 hover:text-green-300 transition">
+              <a href={company.social.tiktok} aria-label="TikTok" className="text-gray-50 hover:text-green-300 transition" target="_blank">
                 <FontAwesomeIcon icon={faTiktok} className="text-3xl" />
               </a>
             </div>

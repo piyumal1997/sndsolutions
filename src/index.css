@@ -2,7 +2,7 @@
 
 @keyframes horizontal-scroll {
   0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); } /* -50% for duplicated list loop */
+  100% { transform: translateX(-60%); } /* -50% for duplicated list loop */
 }
 
 .animate-horizontal-scroll {

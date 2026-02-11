@@ -51,7 +51,7 @@ const About = () => {
   return (
     <main className="pt-0 bg-white">
       {/* Hero Section */}
-      <section className="relative h-84 pt-0">
+      <section className="relative h-96 pt-0">
         <div 
           className="absolute inset-0 bg-cover bg-center bg-fixed" 
           style={{ backgroundImage: `url(${aboutBg})` }}

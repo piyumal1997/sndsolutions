@@ -4,13 +4,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { divisions } from '../data/divisions';
 
-import solutionsBg from '../assets/images/solutions-bg.jpg'; // Import your background image here
+import solutionsBg from '../assets/images/background/solutions-bg.jpg'; // Import your background image here
 
 const Solutions = () => {
   return (
     <main className="pt-0 bg-white">
       {/* Hero Section – Same style as SolarEnergy.jsx */}
-      <section className="relative h-84 pt-0">
+      <section className="relative h-96 pt-0">
         <div 
           className="absolute inset-0 bg-cover bg-center bg-fixed" 
           style={{ backgroundImage: `url(${solutionsBg})` }} // Replace with your actual image import

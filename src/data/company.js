@@ -1,8 +1,8 @@
 import companylogo from '../assets/images/sndlogo.png';
 
 export const company = {
-  name: "S & D Solutions (Pvt) Ltd.",
-  phone: "+94 77 914 2408",
+  name: "S and D Solutions (Pvt) Ltd.",
+  phone: "+94 71 597 4895",
   email: "piyumalpriyanga456@gmail.com",
   address: "No. 4/8, Horagahalandawatta, Batagolla, Yakkala",
   location: {
@@ -13,10 +13,10 @@ export const company = {
   vision: "To lead the nation in delivering the most reliable and affordable renewable energy and engineering solutions.",
   mission:"To inspire a clean-energy future by empowering people and industries to embrace renewable power and innovative engineering—delivering reliable, affordable, and lasting solutions that create value, efficiency, and progress for generations to come.",
   social: {
-    facebook: "#",
-    instagram: "#",
+    facebook: "https://www.facebook.com/sanddsolutions",
+    instagram: "https://www.instagram.com/sanddsolutions",
     tiktok: "#",
-    linkedin: "#"
+    linkedin: "https://www.linkedin.com/company/sanddsolutions"
   }, 
   achievements : [
       {

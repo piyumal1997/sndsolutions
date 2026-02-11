@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTools, faIndustry } from '@fortawesome/free-solid-svg-icons'; // faIndustry for industrial feel
 import { divisions } from '../data/divisions';
-import industrySolarBg from '../assets/images/industry-solar-bg.jpg'; // ← Add your own background image
+import industrySolarBg from '../assets/images/background/industry-solar-bg.jpg'; // ← Add your own background image
 
 // Dynamically load gallery images (adjust folder name as needed)
 const galleryModules = import.meta.glob(
@@ -18,12 +18,12 @@ const SolarIndustry = () => {
   return (
     <main className="pt-0">
       {/* Hero Section */}
-      <section className="relative h-84 pt-0">
+      <section className="relative h-96 pt-0">
         <div
           className="absolute inset-0 bg-cover bg-center bg-fixed"
           style={{ backgroundImage: `url(${industrySolarBg})` }}
         ></div>
-        <div className="absolute inset-0 bg-black/50"></div>
+        <div className="absolute inset-0 bg-black/60"></div>
         <div className="relative container mx-auto px-6 h-full flex items-center justify-center text-center text-white">
           <div className="max-w-5xl">
             <h1 className="text-4xl md:text-6xl font-bold mb-6 drop-shadow-2xl">

@@ -79,16 +79,16 @@ const Header = () => {
             </a>
           </div>
           <div className="flex items-center gap-4 order-1 sm:order-2 hidden sm:flex">
-            <a href={company.social.facebook} aria-label="Facebook" className="hover:text-white transition">
+            <a href={company.social.facebook} aria-label="Facebook" className="hover:text-white transition" target="_blank">
               <FontAwesomeIcon icon={faFacebookF} className="text-xl" />
             </a>
-            <a href={company.social.instagram} aria-label="Instagram" className="hover:text-white transition">
+            <a href={company.social.instagram} aria-label="Instagram" className="hover:text-white transition" target="_blank">
               <FontAwesomeIcon icon={faInstagram} className="text-xl" />
             </a>
-            <a href={company.social.linkedin} aria-label="LinkedIn" className="hover:text-white transition">
+            <a href={company.social.linkedin} aria-label="LinkedIn" className="hover:text-white transition" target="_blank">
               <FontAwesomeIcon icon={faLinkedinIn} className="text-xl" />
             </a>
-            <a href={company.social.tiktok} aria-label="TikTok" className="hover:text-white transition">
+            <a href={company.social.tiktok} aria-label="TikTok" className="hover:text-white transition" target="_blank">
               <FontAwesomeIcon icon={faTiktok} className="text-xl" />
             </a>
           </div>

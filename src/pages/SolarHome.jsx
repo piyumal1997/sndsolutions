@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTools } from '@fortawesome/free-solid-svg-icons'; // For services if needed
 import { divisions } from '../data/divisions';
-import homeSolarBg from '../assets/images/home-solar-bg.jpg';
+import homeSolarBg from '../assets/images/background/home-solar-bg.jpg';
 
 // Dynamically load all images from the folder (supports .jpg, .png, .jpeg, etc.)
 const galleryModules = import.meta.glob(
@@ -18,7 +18,7 @@ const SolarHome = () => {
   return (
     <main className="pt-0">
       {/* Hero Section */}
-      <section className="relative h-84 pt-0">
+      <section className="relative h-96 pt-0">
         <div 
           className="absolute inset-0 bg-cover bg-center bg-fixed" 
           style={{ backgroundImage: `url(${homeSolarBg})` }}

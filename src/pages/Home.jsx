@@ -2,14 +2,14 @@
 import DivisionCard from '../components/ui/DivisionCard';
 import { divisions } from '../data/divisions';
 
-import sand from '../assets/images/sand.jpg';
+import sand from '../assets/images/background/home-bg.jpg';
 
 const Home = () => {
   return (
     <>
       {/* Hero */}
       <section className="relative h-screen pt-0">
-        <div className="absolute inset-0 bg-cover bg-center bg-fixed" style={{ backgroundImage: `url(${sand})` }}></div>
+        <div className="absolute pt-0 md:pt-70 inset-0 bg-cover bg-top bg-fixed" style={{ backgroundImage: `url(${sand})` }}></div>
         <div className="absolute inset-0 bg-black/50"></div>
         <div className="relative container mx-auto px-6 h-full flex items-center justify-center text-center text-white">
           <div className="max-w-5xl">

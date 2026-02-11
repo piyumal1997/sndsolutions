@@ -6,7 +6,7 @@ import SolarSubdivisionCard from '../components/ui/SolarSubdivisionCard';
 import { divisions } from '../data/divisions';
 import { partners } from '../data/partners';
 
-import solarBg from '../assets/images/solar-bg.jpg';
+import solarBg from '../assets/images/background/solar-bg.jpg';
 
 const SolarEnergy = () => {
   const solarSubdivisions = divisions[0]?.subdivisions || [];
@@ -14,7 +14,7 @@ const SolarEnergy = () => {
   return (
     <main className="pt-0">
       {/* Hero Section */}
-      <section className="relative h-84 pt-0">
+      <section className="relative h-96 pt-0">
         <div 
           className="absolute inset-0 bg-cover bg-center bg-fixed" 
           style={{ backgroundImage: `url(${solarBg})` }}
@@ -86,7 +86,7 @@ const SolarEnergy = () => {
           <div className="relative h-32 overflow-hidden">
             <div className="absolute inset-0 flex animate-horizontal-scroll space-x-12 items-center">
               {[...partners, ...partners].map((partner, index) => (
-                <div key={index} className="flex-shrink-0 w-40 h-20 flex items-center justify-center">
+                <div key={index} className="flex-shrink-0 w-60 h-20 flex items-center justify-center">
                   <img 
                     src={partner.logo} 
                     alt={partner.name} 

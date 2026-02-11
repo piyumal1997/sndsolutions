@@ -12,7 +12,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { company } from '../data/company';
 
-import contactBg from '../assets/images/contact-bg.jpg'; // ← Add your background image here
+import contactBg from '../assets/images/background/contact-bg.jpg'; // ← Add your background image here
 
 const ContactInner = () => {
   const [success, setSuccess] = useState(false);
@@ -145,7 +145,7 @@ const ContactInner = () => {
   return (
     <main className="pt-0 bg-white">
       {/* Hero Section – Same style as SolarEnergy.jsx */}
-      <section className="relative h-84 pt-0">
+      <section className="relative h-96 pt-0">
         <div 
           className="absolute inset-0 bg-cover bg-center bg-fixed" 
           style={{ backgroundImage: `url(${contactBg})` }} // Your background image

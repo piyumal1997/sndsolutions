@@ -5,7 +5,7 @@ import { faGears, faTools } from '@fortawesome/free-solid-svg-icons';
 import { divisions } from '../data/divisions';
 
 // Import engineering background image (add this file to src/assets/images/)
-import engineeringBg from '../assets/images/engineering-bg.jpg'; 
+import engineeringBg from '../assets/images/background/engineering-bg.jpg'; 
 
 const Engineering = () => {
   const division = divisions[2]; // Heavy and General Engineering
@@ -13,7 +13,7 @@ const Engineering = () => {
   return (
     <main className="pt-0">
       {/* Hero Section – Styled exactly like SolarEnergy.jsx */}
-      <section className="relative h-84 pt-0">
+      <section className="relative h-96 pt-0">
         <div 
           className="absolute inset-0 bg-cover bg-center bg-fixed" 
           style={{ backgroundImage: `url(${engineeringBg})` }}

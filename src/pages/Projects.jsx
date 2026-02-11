@@ -5,7 +5,7 @@ import ProjectCard from '../components/ui/ProjectCard';
 import ProjectModal from '../components/ui/ProjectModal';
 import { supabase } from '../supabase';
 
-import projectsBg from '../assets/images/projects-bg.jpg'; // Your background image
+import projectsBg from '../assets/images/background/projects-bg.jpg'; // Your background image
 
 const Projects = () => {
   const [projects, setProjects] = useState([]);
@@ -68,7 +68,7 @@ const Projects = () => {
   return (
     <main className="pt-0 bg-white">
       {/* Hero Section – Same as SolarEnergy.jsx */}
-      <section className="relative h-84 pt-0">
+      <section className="relative h-96 pt-0">
         <div 
           className="absolute inset-0 bg-cover bg-center bg-fixed" 
           style={{ backgroundImage: `url(${projectsBg})` }}
