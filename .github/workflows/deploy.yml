@@ -12,6 +12,8 @@ permissions:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Crucial for pushing code
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
