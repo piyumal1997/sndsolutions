@@ -3,12 +3,13 @@ import companylogo from '../assets/images/sndlogo.png';
 export const company = {
   name: "S and D Solutions (Pvt) Ltd.",
   phone: "+94 71 597 4895",
-  email: "piyumalpriyanga456@gmail.com",
+  email: "info@sanddsolutions.lk",
   address: "No. 4/8, Horagahalandawatta, Batagolla, Yakkala",
   location: {
-    lat: 6.9271,
-    lng: 79.8612
+    lat: 7.0802346985376055,
+    lng: 80.04550413705672
   },
+  office: "Trace Expert City,Maradana, Colombo 10",
   logo: [companylogo],
   vision: "To lead the nation in delivering the most reliable and affordable renewable energy and engineering solutions.",
   mission:"To inspire a clean-energy future by empowering people and industries to embrace renewable power and innovative engineering—delivering reliable, affordable, and lasting solutions that create value, efficiency, and progress for generations to come.",

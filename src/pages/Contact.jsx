@@ -1,18 +1,16 @@
-// src/pages/Contact.jsx
+// src/pages/Contact.jsx (Updated with multiple offices, dynamic head office map using lat/lng, added Colombo office map)
 import { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
-import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faLocationDot,
   faPhone,
   faEnvelope,
   faCheckCircle,
-  faBuilding,
 } from '@fortawesome/free-solid-svg-icons';
 import { company } from '../data/company';
+import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
-import contactBg from '../assets/images/background/contact-bg.jpg'; // ← Add your background image here
+import contactBg from '../assets/images/background/contact-bg.jpg';
 
 const ContactInner = () => {
   const [success, setSuccess] = useState(false);
@@ -30,19 +28,28 @@ const ContactInner = () => {
 
   const { executeRecaptcha } = useGoogleReCaptcha();
 
-  const mapRef = useRef(null);
-  const [mapSrc, setMapSrc] = useState(null);
-  const [mapLoaded, setMapLoaded] = useState(false);
+  // Map refs and states
+  const headMapRef = useRef(null);
+  const colomboMapRef = useRef(null);
+  const [headMapSrc, setHeadMapSrc] = useState(null);
+  const [colomboMapSrc, setColomboMapSrc] = useState(null);
+  const [headLoaded, setHeadLoaded] = useState(false);
+  const [colomboLoaded, setColomboLoaded] = useState(false);
 
-  const mapUrl =
-    'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.785978322663!2d79.85866831477286!3d6.916668395002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae2591a713c14b9%3A0x1a9c3a7d0b7e6c6e!2sColombo%2003%2C%20Sri%20Lanka!5e0!3m2!1sen!2slk!4v1705480000000';
+  // Coordinates
+  const headLocation = company.location; // { lat: 7.0802346985376055, lng: 80.04550413705672 }
+  const colomboLocation = { lat: 6.9300, lng: 79.861944 }; // Trace Expert City, Maradana, Colombo 10
 
+  const headMapUrl = `https://maps.google.com/maps?q=${headLocation.lat},${headLocation.lng}&hl=en&z=15&output=embed`;
+  const colomboMapUrl = `https://maps.google.com/maps?q=${colomboLocation.lat},${colomboLocation.lng}&hl=en&z=15&output=embed`;
+
+  // Lazy load head office map
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setMapSrc(mapUrl);
+            setHeadMapSrc(headMapUrl);
             observer.unobserve(entry.target);
           }
         });
@@ -50,14 +57,33 @@ const ContactInner = () => {
       { rootMargin: '150px' }
     );
 
-    if (mapRef.current) observer.observe(mapRef.current);
+    if (headMapRef.current) observer.observe(headMapRef.current);
 
     return () => {
-      if (mapRef.current) observer.unobserve(mapRef.current);
+      if (headMapRef.current) observer.unobserve(headMapRef.current);
     };
   }, []);
 
-  const handleMapLoad = () => setMapLoaded(true);
+  // Lazy load Colombo office map
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setColomboMapSrc(colomboMapUrl);
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { rootMargin: '150px' }
+    );
+
+    if (colomboMapRef.current) observer.observe(colomboMapRef.current);
+
+    return () => {
+      if (colomboMapRef.current) observer.unobserve(colomboMapRef.current);
+    };
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -97,18 +123,10 @@ const ContactInner = () => {
     setIsSubmitting(true);
 
     try {
-      console.log('[Frontend] Generating reCAPTCHA token...');
       const token = await executeRecaptcha('inquiryForm');
 
-      console.log('[Frontend] reCAPTCHA token generated:', token.substring(0, 30) + '...');
-      console.log('[Frontend] Token length:', token.length);
-
-      if (!token || token.length < 50) {
-        throw new Error('Failed to generate reCAPTCHA token');
-      }
-
       const response = await fetch(
-        'https://riflxhbxduomczyszbmw.supabase.co/functions/v1/submit-inquiry', // ← Your real Edge Function URL
+        'https://riflxhbxduomczyszbmw.supabase.co/functions/v1/submit-inquiry',
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -119,10 +137,8 @@ const ContactInner = () => {
         }
       );
 
-      const responseText = await response.text();
-
       if (!response.ok) {
-        console.error('[Frontend] Edge Function error:', response.status, responseText);
+        const responseText = await response.text();
         throw new Error(responseText || 'Submission failed');
       }
 
@@ -135,7 +151,6 @@ const ContactInner = () => {
         message: '',
       });
     } catch (err) {
-      console.error('[Frontend] Submission error:', err);
       setSubmitError(err.message || 'Something went wrong. Please try again.');
     } finally {
       setIsSubmitting(false);
@@ -144,11 +159,11 @@ const ContactInner = () => {
 
   return (
     <main className="pt-0 bg-white">
-      {/* Hero Section – Same style as SolarEnergy.jsx */}
-      <section className="relative h-96 pt-0">
+      {/* Hero Section */}
+      <section className="relative h-96">
         <div 
           className="absolute inset-0 bg-cover bg-center bg-fixed" 
-          style={{ backgroundImage: `url(${contactBg})` }} // Your background image
+          style={{ backgroundImage: `url(${contactBg})` }}
         ></div>
         <div className="absolute inset-0 bg-black/50"></div>
         <div className="relative container mx-auto px-6 h-full flex items-center justify-center text-center text-white">
@@ -167,37 +182,50 @@ const ContactInner = () => {
       <section className="py-16 md:py-20 bg-gray-50">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 max-w-7xl mx-auto">
-            {/* Contact Info + Form */}
-            <div className="w-full lg:w-1/2 order-2 lg:order-1">
+            {/* Contact Info + Form - Left on large screens */}
+            <div className="w-full lg:w-1/2">
               <div className="bg-white rounded-2xl shadow-xl p-8 lg:p-10">
-                {/* Company Info */}
+                {/* Company Logo & Name */}
                 <div className="text-center mb-10">
                   <img
-                    src={company.logo || '/logo-placeholder.png'}
+                    src={company.logo[0] || '/logo-placeholder.png'}
                     alt={`${company.name} Logo`}
                     className="h-20 mx-auto mb-6 object-contain"
                   />
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">{company.name}</h3>
                 </div>
 
-                <div className="space-y-6">
+                {/* Offices & Contact Details */}
+                <div className="space-y-8">
+                  {/* Head Office */}
                   <div className="flex items-start gap-4">
-                    <FontAwesomeIcon icon={faBuilding} className="text-green-600 text-2xl mt-1" />
+                    <FontAwesomeIcon icon={faLocationDot} className="text-green-600 text-2xl mt-1 flex-shrink-0" />
                     <div>
-                      <p className="font-medium text-gray-900">Head Office</p>
+                      <p className="font-semibold text-gray-900">Head Office</p>
                       <p className="text-gray-700">{company.address}</p>
                     </div>
                   </div>
 
+                  {/* Colombo Office */}
+                  <div className="flex items-start gap-4">
+                    <FontAwesomeIcon icon={faLocationDot} className="text-green-600 text-2xl mt-1 flex-shrink-0" />
+                    <div>
+                      <p className="font-semibold text-gray-900">Colombo Office</p>
+                      <p className="text-gray-700">{company.office}</p>
+                    </div>
+                  </div>
+
+                  {/* Phone */}
                   <div className="flex items-center gap-4">
-                    <FontAwesomeIcon icon={faPhone} className="text-green-600 text-2xl" />
+                    <FontAwesomeIcon icon={faPhone} className="text-green-600 text-2xl flex-shrink-0" />
                     <a href={`tel:${company.phone.replace(/\s/g, '')}`} className="text-gray-700 hover:text-green-600 transition">
                       {company.phone}
                     </a>
                   </div>
 
+                  {/* Email */}
                   <div className="flex items-center gap-4">
-                    <FontAwesomeIcon icon={faEnvelope} className="text-green-600 text-2xl" />
+                    <FontAwesomeIcon icon={faEnvelope} className="text-green-600 text-2xl flex-shrink-0" />
                     <a href={`mailto:${company.email}`} className="text-gray-700 hover:text-green-600 transition">
                       {company.email}
                     </a>
@@ -222,45 +250,17 @@ const ContactInner = () => {
                         </div>
                       )}
 
-                      <input
-                        type="text"
-                        name="name"
-                        placeholder="Your Name *"
-                        value={formData.name}
-                        onChange={handleChange}
-                        required
-                        className="w-full px-5 py-4 bg-gray-50 border border-gray-300 rounded-lg focus:border-green-600 focus:outline-none transition"
-                      />
+                      {/* Form fields remain unchanged */}
+                      <input type="text" name="name" placeholder="Your Name *" value={formData.name} onChange={handleChange} required className="w-full px-5 py-4 bg-gray-50 border border-gray-300 rounded-lg focus:border-green-600 focus:outline-none transition" />
                       {errors.name && <p className="text-red-500 text-sm -mt-2">{errors.name}</p>}
 
-                      <input
-                        type="email"
-                        name="email"
-                        placeholder="Your Email *"
-                        value={formData.email}
-                        onChange={handleChange}
-                        required
-                        className="w-full px-5 py-4 bg-gray-50 border border-gray-300 rounded-lg focus:border-green-600 focus:outline-none transition"
-                      />
+                      <input type="email" name="email" placeholder="Your Email *" value={formData.email} onChange={handleChange} required className="w-full px-5 py-4 bg-gray-50 border border-gray-300 rounded-lg focus:border-green-600 focus:outline-none transition" />
                       {errors.email && <p className="text-red-500 text-sm -mt-2">{errors.email}</p>}
 
-                      <input
-                        type="tel"
-                        name="phone"
-                        placeholder="Your Phone (optional)"
-                        value={formData.phone}
-                        onChange={handleChange}
-                        className="w-full px-5 py-4 bg-gray-50 border border-gray-300 rounded-lg focus:border-green-600 focus:outline-none transition"
-                      />
+                      <input type="tel" name="phone" placeholder="Your Phone (optional)" value={formData.phone} onChange={handleChange} className="w-full px-5 py-4 bg-gray-50 border border-gray-300 rounded-lg focus:border-green-600 focus:outline-none transition" />
                       {errors.phone && <p className="text-red-500 text-sm -mt-2">{errors.phone}</p>}
 
-                      <select
-                        name="inquiry_type"
-                        value={formData.inquiry_type}
-                        onChange={handleChange}
-                        required
-                        className="w-full px-5 py-4 bg-gray-50 border border-gray-300 rounded-lg focus:border-green-600 focus:outline-none transition"
-                      >
+                      <select name="inquiry_type" value={formData.inquiry_type} onChange={handleChange} required className="w-full px-5 py-4 bg-gray-50 border border-gray-300 rounded-lg focus:border-green-600 focus:outline-none transition">
                         <option value="">Select Inquiry Type *</option>
                         <option value="Home Solar Solutions">Home Solar Solutions</option>
                         <option value="Industry Solar Solutions">Industry Solar Solutions</option>
@@ -270,26 +270,10 @@ const ContactInner = () => {
                       </select>
                       {errors.inquiry_type && <p className="text-red-500 text-sm -mt-2">{errors.inquiry_type}</p>}
 
-                      <textarea
-                        name="message"
-                        rows="5"
-                        placeholder="Your Message *"
-                        value={formData.message}
-                        onChange={handleChange}
-                        required
-                        className="w-full px-5 py-4 bg-gray-50 border border-gray-300 rounded-lg focus:border-green-600 focus:outline-none transition resize-none"
-                      />
+                      <textarea name="message" rows="5" placeholder="Your Message *" value={formData.message} onChange={handleChange} required className="w-full px-5 py-4 bg-gray-50 border border-gray-300 rounded-lg focus:border-green-600 focus:outline-none transition resize-none" />
                       {errors.message && <p className="text-red-500 text-sm -mt-2">{errors.message}</p>}
 
-                      <button
-                        type="submit"
-                        disabled={isSubmitting}
-                        className={`w-full py-4 rounded-lg font-medium text-lg transition ${
-                          isSubmitting
-                            ? 'bg-green-400 cursor-not-allowed'
-                            : 'bg-green-600 hover:bg-green-700 text-white'
-                        }`}
-                      >
+                      <button type="submit" disabled={isSubmitting} className={`w-full py-4 rounded-lg font-medium text-lg transition ${isSubmitting ? 'bg-green-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700 text-white'}`}>
                         {isSubmitting ? 'Sending...' : 'Send Message'}
                       </button>
                     </form>
@@ -298,39 +282,79 @@ const ContactInner = () => {
               </div>
             </div>
 
-            {/* Map Section */}
-            <div className="w-full lg:w-1/2 order-1 lg:order-2">
-              <h2 className="text-3xl font-bold text-center mb-8 text-gray-900">
-                Our Location
+            {/* Locations - Right on large screens */}
+            <div className="w-full lg:w-1/2">
+              <h2 className="text-3xl font-bold text-center mb-12 text-gray-900">
+                Our Locations
               </h2>
-              <div
-                ref={mapRef}
-                className="rounded-2xl overflow-hidden shadow-2xl h-96 lg:h-[500px] relative bg-white"
-              >
-                {!mapSrc ? (
-                  <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-600">
-                    <p className="text-xl">Map loads when in view</p>
-                  </div>
-                ) : (
-                  <>
-                    <iframe
-                      src={mapSrc}
-                      width="100%"
-                      height="100%"
-                      style={{ border: 0 }}
-                      allowFullScreen=""
-                      loading="lazy"
-                      referrerPolicy="no-referrer-when-downgrade"
-                      title="Company Location"
-                      onLoad={handleMapLoad}
-                    />
-                    {!mapLoaded && (
-                      <div className="absolute inset-0 bg-white/80 flex items-center justify-center">
-                        <p className="text-lg text-gray-700">Loading map...</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-12">
+                {/* Head Office Map */}
+                <div className="flex flex-col">
+                  <h3 className="text-2xl font-bold text-center mb-6 text-gray-900">
+                    Head Office
+                  </h3>
+                  <div ref={headMapRef} className="rounded-2xl overflow-hidden shadow-2xl h-96 relative bg-gray-100">
+                    {!headMapSrc ? (
+                      <div className="w-full h-full flex items-center justify-center text-gray-600">
+                        <p className="text-lg">Map loads when in view</p>
                       </div>
+                    ) : (
+                      <>
+                        <iframe
+                          src={headMapSrc}
+                          width="100%"
+                          height="100%"
+                          style={{ border: 0 }}
+                          allowFullScreen=""
+                          loading="lazy"
+                          referrerPolicy="no-referrer-when-downgrade"
+                          title="Head Office Location"
+                          onLoad={() => setHeadLoaded(true)}
+                        />
+                        {!headLoaded && (
+                          <div className="absolute inset-0 bg-white/80 flex items-center justify-center">
+                            <p className="text-lg text-gray-700">Loading map...</p>
+                          </div>
+                        )}
+                      </>
                     )}
-                  </>
-                )}
+                  </div>
+                  <p className="text-center mt-6 text-gray-700 font-medium">{company.address}</p>
+                </div>
+
+                {/* Colombo Office Map */}
+                <div className="flex flex-col">
+                  <h3 className="text-2xl font-bold text-center mb-6 text-gray-900">
+                    Colombo Office
+                  </h3>
+                  <div ref={colomboMapRef} className="rounded-2xl overflow-hidden shadow-2xl h-96 relative bg-gray-100">
+                    {!colomboMapSrc ? (
+                      <div className="w-full h-full flex items-center justify-center text-gray-600">
+                        <p className="text-lg">Map loads when in view</p>
+                      </div>
+                    ) : (
+                      <>
+                        <iframe
+                          src={colomboMapSrc}
+                          width="100%"
+                          height="100%"
+                          style={{ border: 0 }}
+                          allowFullScreen=""
+                          loading="lazy"
+                          referrerPolicy="no-referrer-when-downgrade"
+                          title="Colombo Office Location"
+                          onLoad={() => setColomboLoaded(true)}
+                        />
+                        {!colomboLoaded && (
+                          <div className="absolute inset-0 bg-white/80 flex items-center justify-center">
+                            <p className="text-lg text-gray-700">Loading map...</p>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+                  <p className="text-center mt-6 text-gray-700 font-medium">{company.office}</p>
+                </div>
               </div>
             </div>
           </div>
