@@ -22,13 +22,13 @@ export const company = {
   achievements : [
       {
         id: 1,
-        value: "800+",
+        value: "500+",
         label: "Projects Completed",
         icon: 'faHelmetSafety',
       },
       {
         id: 2,
-        value: "80+ MW",
+        value: "10+ MW",
         label: "Solar Capacity Installed",
         icon: 'faSun',
       },
@@ -40,7 +40,7 @@ export const company = {
       },
       {
         id: 4,
-        value: "15+",
+        value: "4",
         label: "Years of Excellence",
         icon: 'faTrophy',
       },
