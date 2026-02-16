@@ -246,7 +246,7 @@ const ContactInner = () => {
                     <form onSubmit={handleSubmit} className="space-y-6">
                       {submitError && (
                         <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg text-center">
-                          {submitError}
+                          {submitError.Error}
                         </div>
                       )}
 
@@ -257,7 +257,7 @@ const ContactInner = () => {
                       <input type="email" name="email" placeholder="Your Email *" value={formData.email} onChange={handleChange} required className="w-full px-5 py-4 bg-gray-50 border border-gray-300 rounded-lg focus:border-green-600 focus:outline-none transition" />
                       {errors.email && <p className="text-red-500 text-sm -mt-2">{errors.email}</p>}
 
-                      <input type="tel" name="phone" placeholder="Your Phone (optional)" value={formData.phone} onChange={handleChange} className="w-full px-5 py-4 bg-gray-50 border border-gray-300 rounded-lg focus:border-green-600 focus:outline-none transition" />
+                      <input type="tel" name="phone" placeholder="Your Phone *" value={formData.phone} onChange={handleChange} required className="w-full px-5 py-4 bg-gray-50 border border-gray-300 rounded-lg focus:border-green-600 focus:outline-none transition" />
                       {errors.phone && <p className="text-red-500 text-sm -mt-2">{errors.phone}</p>}
 
                       <select name="inquiry_type" value={formData.inquiry_type} onChange={handleChange} required className="w-full px-5 py-4 bg-gray-50 border border-gray-300 rounded-lg focus:border-green-600 focus:outline-none transition">
