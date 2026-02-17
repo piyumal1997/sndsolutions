@@ -1,16 +1,19 @@
 // src/pages/Contact.jsx (Updated with multiple offices, dynamic head office map using lat/lng, added Colombo office map)
-import { useState, useEffect, useRef } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useState, useEffect, useRef } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faLocationDot,
   faPhone,
   faEnvelope,
   faCheckCircle,
-} from '@fortawesome/free-solid-svg-icons';
-import { company } from '../data/company';
-import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3';
+} from "@fortawesome/free-solid-svg-icons";
+import { company } from "../data/company";
+import {
+  GoogleReCaptchaProvider,
+  useGoogleReCaptcha,
+} from "react-google-recaptcha-v3";
 
-import contactBg from '../assets/images/background/contact-bg.jpg';
+import contactBg from "../assets/images/background/contact-bg.jpg";
 
 const ContactInner = () => {
   const [success, setSuccess] = useState(false);
@@ -18,11 +21,11 @@ const ContactInner = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    inquiry_type: '',
-    message: '',
+    name: "",
+    email: "",
+    phone: "",
+    inquiry_type: "",
+    message: "",
   });
   const [errors, setErrors] = useState({});
 
@@ -38,7 +41,7 @@ const ContactInner = () => {
 
   // Coordinates
   const headLocation = company.location; // { lat: 7.0802346985376055, lng: 80.04550413705672 }
-  const colomboLocation = { lat: 6.9300, lng: 79.861944 }; // Trace Expert City, Maradana, Colombo 10
+  const colomboLocation = { lat: 6.93, lng: 79.861944 }; // Trace Expert City, Maradana, Colombo 10
 
   const headMapUrl = `https://maps.google.com/maps?q=${headLocation.lat},${headLocation.lng}&hl=en&z=15&output=embed`;
   const colomboMapUrl = `https://maps.google.com/maps?q=${colomboLocation.lat},${colomboLocation.lng}&hl=en&z=15&output=embed`;
@@ -54,7 +57,7 @@ const ContactInner = () => {
           }
         });
       },
-      { rootMargin: '150px' }
+      { rootMargin: "150px" },
     );
 
     if (headMapRef.current) observer.observe(headMapRef.current);
@@ -75,7 +78,7 @@ const ContactInner = () => {
           }
         });
       },
-      { rootMargin: '150px' }
+      { rootMargin: "150px" },
     );
 
     if (colomboMapRef.current) observer.observe(colomboMapRef.current);
@@ -88,20 +91,25 @@ const ContactInner = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    setErrors((prev) => ({ ...prev, [name]: '' }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
     setSubmitError(null);
   };
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.name.trim()) newErrors.name = 'Name is required';
-    if (!formData.email.trim()) newErrors.email = 'Email is required';
-    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Email is invalid';
-    if (formData.phone && !/^\+?\d{10,15}$/.test(formData.phone.replace(/\s/g, ''))) {
-      newErrors.phone = 'Invalid phone number (10-15 digits)';
+    if (!formData.name.trim()) newErrors.name = "Name is required";
+    if (!formData.email.trim()) newErrors.email = "Email is required";
+    else if (!/\S+@\S+\.\S+/.test(formData.email))
+      newErrors.email = "Email is invalid";
+    if (
+      formData.phone &&
+      !/^\+?\d{10,15}$/.test(formData.phone.replace(/\s/g, ""))
+    ) {
+      newErrors.phone = "Invalid phone number (10-15 digits)";
     }
-    if (!formData.inquiry_type) newErrors.inquiry_type = 'Please select inquiry type';
-    if (!formData.message.trim()) newErrors.message = 'Message is required';
+    if (!formData.inquiry_type)
+      newErrors.inquiry_type = "Please select inquiry type";
+    if (!formData.message.trim()) newErrors.message = "Message is required";
     return newErrors;
   };
 
@@ -116,42 +124,42 @@ const ContactInner = () => {
     }
 
     if (!executeRecaptcha) {
-      setSubmitError('reCAPTCHA not loaded. Please refresh the page.');
+      setSubmitError("reCAPTCHA not loaded. Please refresh the page.");
       return;
     }
 
     setIsSubmitting(true);
 
     try {
-      const token = await executeRecaptcha('inquiryForm');
+      const token = await executeRecaptcha("inquiryForm");
 
       const response = await fetch(
-        'https://riflxhbxduomczyszbmw.supabase.co/functions/v1/submit-inquiry',
+        "https://riflxhbxduomczyszbmw.supabase.co/functions/v1/submit-inquiry",
         {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             ...formData,
             recaptcha_token: token,
           }),
-        }
+        },
       );
 
       if (!response.ok) {
         const responseText = await response.text();
-        throw new Error(responseText || 'Submission failed');
+        throw new Error(responseText || "Submission failed");
       }
 
       setSuccess(true);
       setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        inquiry_type: '',
-        message: '',
+        name: "",
+        email: "",
+        phone: "",
+        inquiry_type: "",
+        message: "",
       });
     } catch (err) {
-      setSubmitError(err.message || 'Something went wrong. Please try again.');
+      setSubmitError(err.message || "Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -161,8 +169,8 @@ const ContactInner = () => {
     <main className="pt-0 bg-white">
       {/* Hero Section */}
       <section className="relative h-96">
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-fixed" 
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-fixed"
           style={{ backgroundImage: `url(${contactBg})` }}
         ></div>
         <div className="absolute inset-0 bg-black/50"></div>
@@ -188,18 +196,23 @@ const ContactInner = () => {
                 {/* Company Logo & Name */}
                 <div className="text-center mb-10">
                   <img
-                    src={company.logo[0] || '/logo-placeholder.png'}
+                    src={company.logo[0] || "/logo-placeholder.png"}
                     alt={`${company.name} Logo`}
                     className="h-20 mx-auto mb-6 object-contain"
                   />
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{company.name}</h3>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                    {company.name}
+                  </h3>
                 </div>
 
                 {/* Offices & Contact Details */}
                 <div className="space-y-8">
                   {/* Head Office */}
                   <div className="flex items-start gap-4">
-                    <FontAwesomeIcon icon={faLocationDot} className="text-green-600 text-2xl mt-1 flex-shrink-0" />
+                    <FontAwesomeIcon
+                      icon={faLocationDot}
+                      className="text-green-600 text-2xl mt-1 flex-shrink-0"
+                    />
                     <div>
                       <p className="font-semibold text-gray-900">Head Office</p>
                       <p className="text-gray-700">{company.address}</p>
@@ -208,25 +221,42 @@ const ContactInner = () => {
 
                   {/* Colombo Office */}
                   <div className="flex items-start gap-4">
-                    <FontAwesomeIcon icon={faLocationDot} className="text-green-600 text-2xl mt-1 flex-shrink-0" />
+                    <FontAwesomeIcon
+                      icon={faLocationDot}
+                      className="text-green-600 text-2xl mt-1 flex-shrink-0"
+                    />
                     <div>
-                      <p className="font-semibold text-gray-900">Colombo Office</p>
+                      <p className="font-semibold text-gray-900">
+                        Colombo Office
+                      </p>
                       <p className="text-gray-700">{company.office}</p>
                     </div>
                   </div>
 
                   {/* Phone */}
                   <div className="flex items-center gap-4">
-                    <FontAwesomeIcon icon={faPhone} className="text-green-600 text-2xl flex-shrink-0" />
-                    <a href={`tel:${company.phone.replace(/\s/g, '')}`} className="text-gray-700 hover:text-green-600 transition">
+                    <FontAwesomeIcon
+                      icon={faPhone}
+                      className="text-green-600 text-2xl flex-shrink-0"
+                    />
+                    <a
+                      href={`tel:${company.phone.replace(/\s/g, "")}`}
+                      className="text-gray-700 hover:text-green-600 transition"
+                    >
                       {company.phone}
                     </a>
                   </div>
 
                   {/* Email */}
                   <div className="flex items-center gap-4">
-                    <FontAwesomeIcon icon={faEnvelope} className="text-green-600 text-2xl flex-shrink-0" />
-                    <a href={`mailto:${company.email}`} className="text-gray-700 hover:text-green-600 transition">
+                    <FontAwesomeIcon
+                      icon={faEnvelope}
+                      className="text-green-600 text-2xl flex-shrink-0"
+                    />
+                    <a
+                      href={`mailto:${company.email}`}
+                      className="text-gray-700 hover:text-green-600 transition"
+                    >
                       {company.email}
                     </a>
                   </div>
@@ -236,45 +266,121 @@ const ContactInner = () => {
                 <div className="mt-12">
                   {success ? (
                     <div className="bg-green-50 border border-green-200 rounded-xl p-8 text-center">
-                      <FontAwesomeIcon icon={faCheckCircle} className="text-green-600 text-6xl mb-4" />
-                      <h3 className="text-2xl font-bold text-green-700 mb-3">Thank You!</h3>
+                      <FontAwesomeIcon
+                        icon={faCheckCircle}
+                        className="text-green-600 text-6xl mb-4"
+                      />
+                      <h3 className="text-2xl font-bold text-green-700 mb-3">
+                        Thank You!
+                      </h3>
                       <p className="text-lg text-gray-700">
-                        Your inquiry has been sent successfully. We will respond within 24 hours.
+                        Your inquiry has been sent successfully. We will respond
+                        within 24 hours.
                       </p>
                     </div>
                   ) : (
                     <form onSubmit={handleSubmit} className="space-y-6">
                       {submitError && (
                         <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg text-center">
-                          {submitError.Error}
+                          {submitError}
                         </div>
                       )}
 
                       {/* Form fields remain unchanged */}
-                      <input type="text" name="name" placeholder="Your Name *" value={formData.name} onChange={handleChange} required className="w-full px-5 py-4 bg-gray-50 border border-gray-300 rounded-lg focus:border-green-600 focus:outline-none transition" />
-                      {errors.name && <p className="text-red-500 text-sm -mt-2">{errors.name}</p>}
+                      <input
+                        type="text"
+                        name="name"
+                        placeholder="Your Name *"
+                        value={formData.name}
+                        onChange={handleChange}
+                        required
+                        className="w-full px-5 py-4 bg-gray-50 border border-gray-300 rounded-lg focus:border-green-600 focus:outline-none transition"
+                      />
+                      {errors.name && (
+                        <p className="text-red-500 text-sm -mt-2">
+                          {errors.name}
+                        </p>
+                      )}
 
-                      <input type="email" name="email" placeholder="Your Email *" value={formData.email} onChange={handleChange} required className="w-full px-5 py-4 bg-gray-50 border border-gray-300 rounded-lg focus:border-green-600 focus:outline-none transition" />
-                      {errors.email && <p className="text-red-500 text-sm -mt-2">{errors.email}</p>}
+                      <input
+                        type="email"
+                        name="email"
+                        placeholder="Your Email *"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                        className="w-full px-5 py-4 bg-gray-50 border border-gray-300 rounded-lg focus:border-green-600 focus:outline-none transition"
+                      />
+                      {errors.email && (
+                        <p className="text-red-500 text-sm -mt-2">
+                          {errors.email}
+                        </p>
+                      )}
 
-                      <input type="tel" name="phone" placeholder="Your Phone *" value={formData.phone} onChange={handleChange} required className="w-full px-5 py-4 bg-gray-50 border border-gray-300 rounded-lg focus:border-green-600 focus:outline-none transition" />
-                      {errors.phone && <p className="text-red-500 text-sm -mt-2">{errors.phone}</p>}
+                      <input
+                        type="tel"
+                        name="phone"
+                        placeholder="Your Phone *"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        required
+                        className="w-full px-5 py-4 bg-gray-50 border border-gray-300 rounded-lg focus:border-green-600 focus:outline-none transition"
+                      />
+                      {errors.phone && (
+                        <p className="text-red-500 text-sm -mt-2">
+                          {errors.phone}
+                        </p>
+                      )}
 
-                      <select name="inquiry_type" value={formData.inquiry_type} onChange={handleChange} required className="w-full px-5 py-4 bg-gray-50 border border-gray-300 rounded-lg focus:border-green-600 focus:outline-none transition">
+                      <select
+                        name="inquiry_type"
+                        value={formData.inquiry_type}
+                        onChange={handleChange}
+                        required
+                        className="w-full px-5 py-4 bg-gray-50 border border-gray-300 rounded-lg focus:border-green-600 focus:outline-none transition"
+                      >
                         <option value="">Select Inquiry Type *</option>
-                        <option value="Home Solar Solutions">Home Solar Solutions</option>
-                        <option value="Industry Solar Solutions">Industry Solar Solutions</option>
-                        <option value="Automation & Control Systems">Automation & Control Systems</option>
-                        <option value="General Engineering">General Engineering</option>
+                        <option value="Home Solar Solutions">
+                          Home Solar Solutions
+                        </option>
+                        <option value="Industry Solar Solutions">
+                          Industry Solar Solutions
+                        </option>
+                        <option value="Automation & Control Systems">
+                          Automation & Control Systems
+                        </option>
+                        <option value="General Engineering">
+                          General Engineering
+                        </option>
                         <option value="Other">Other</option>
                       </select>
-                      {errors.inquiry_type && <p className="text-red-500 text-sm -mt-2">{errors.inquiry_type}</p>}
+                      {errors.inquiry_type && (
+                        <p className="text-red-500 text-sm -mt-2">
+                          {errors.inquiry_type}
+                        </p>
+                      )}
 
-                      <textarea name="message" rows="5" placeholder="Your Message *" value={formData.message} onChange={handleChange} required className="w-full px-5 py-4 bg-gray-50 border border-gray-300 rounded-lg focus:border-green-600 focus:outline-none transition resize-none" />
-                      {errors.message && <p className="text-red-500 text-sm -mt-2">{errors.message}</p>}
+                      <textarea
+                        name="message"
+                        rows="5"
+                        placeholder="Your Message *"
+                        value={formData.message}
+                        onChange={handleChange}
+                        required
+                        className="w-full px-5 py-4 bg-gray-50 border border-gray-300 rounded-lg focus:border-green-600 focus:outline-none transition resize-none"
+                      />
+                      {errors.message && (
+                        <p className="text-red-500 text-sm -mt-2">
+                          {errors.message}
+                        </p>
+                      )}
 
-                      <button type="submit" disabled={isSubmitting} className={`w-full py-4 rounded-lg font-medium text-lg transition ${isSubmitting ? 'bg-green-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700 text-white'}`}>
-                        {isSubmitting ? 'Sending...' : 'Send Message'}
+                      <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className={`w-full py-4 rounded-lg font-medium text-lg transition ${isSubmitting ? "bg-green-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700 text-white"}`}
+                      >
+                        {isSubmitting ? "Sending..." : "Send Message"}
                       </button>
                     </form>
                   )}
@@ -293,7 +399,10 @@ const ContactInner = () => {
                   <h3 className="text-2xl font-bold text-center mb-6 text-gray-900">
                     Head Office
                   </h3>
-                  <div ref={headMapRef} className="rounded-2xl overflow-hidden shadow-2xl h-96 relative bg-gray-100">
+                  <div
+                    ref={headMapRef}
+                    className="rounded-2xl overflow-hidden shadow-2xl h-96 relative bg-gray-100"
+                  >
                     {!headMapSrc ? (
                       <div className="w-full h-full flex items-center justify-center text-gray-600">
                         <p className="text-lg">Map loads when in view</p>
@@ -313,13 +422,17 @@ const ContactInner = () => {
                         />
                         {!headLoaded && (
                           <div className="absolute inset-0 bg-white/80 flex items-center justify-center">
-                            <p className="text-lg text-gray-700">Loading map...</p>
+                            <p className="text-lg text-gray-700">
+                              Loading map...
+                            </p>
                           </div>
                         )}
                       </>
                     )}
                   </div>
-                  <p className="text-center mt-6 text-gray-700 font-medium">{company.address}</p>
+                  <p className="text-center mt-6 text-gray-700 font-medium">
+                    {company.address}
+                  </p>
                 </div>
 
                 {/* Colombo Office Map */}
@@ -327,7 +440,10 @@ const ContactInner = () => {
                   <h3 className="text-2xl font-bold text-center mb-6 text-gray-900">
                     Colombo Office
                   </h3>
-                  <div ref={colomboMapRef} className="rounded-2xl overflow-hidden shadow-2xl h-96 relative bg-gray-100">
+                  <div
+                    ref={colomboMapRef}
+                    className="rounded-2xl overflow-hidden shadow-2xl h-96 relative bg-gray-100"
+                  >
                     {!colomboMapSrc ? (
                       <div className="w-full h-full flex items-center justify-center text-gray-600">
                         <p className="text-lg">Map loads when in view</p>
@@ -347,13 +463,17 @@ const ContactInner = () => {
                         />
                         {!colomboLoaded && (
                           <div className="absolute inset-0 bg-white/80 flex items-center justify-center">
-                            <p className="text-lg text-gray-700">Loading map...</p>
+                            <p className="text-lg text-gray-700">
+                              Loading map...
+                            </p>
                           </div>
                         )}
                       </>
                     )}
                   </div>
-                  <p className="text-center mt-6 text-gray-700 font-medium">{company.office}</p>
+                  <p className="text-center mt-6 text-gray-700 font-medium">
+                    {company.office}
+                  </p>
                 </div>
               </div>
             </div>
