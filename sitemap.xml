@@ -10,7 +10,7 @@
     <priority>1.0</priority>
     <!-- Featured image for rich results -->
     <image:image>
-      <image:loc>/src/assets/images/og-image-1200x630.png</image:loc>
+      <image:loc>https://www.sanddsolutions.lk/assets/og-image-1200x630-CQN6o_aa.png</image:loc>
       <image:title>S and D Solutions | Solar Energy, Automation & Engineering Solutions in Sri Lanka</image:title>
       <image:caption>Innovative solar power, automation, and engineering services across Sri Lanka</image:caption>
     </image:image>
