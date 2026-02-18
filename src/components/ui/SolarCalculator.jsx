@@ -1,88 +1,196 @@
-// src/components/ui/SolarCalculator.jsx (Updated – Added Avg Monthly Generation)
+// src/components/ui/SolarCalculator.jsx
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faPlug,           // Connection Type
-  faBolt,           // Estimated monthly consumption
-  faSolarPanel,     // Recommended system size + Generation
-  faMoneyBillWave,  // Upfront cost / System cost
-  faPiggyBank,      // Savings / EMI
-  faCalendarAlt,    // Payback period
-  faExclamationCircle, // Note
+  faPlug,
+  faBolt,
+  faSolarPanel,
+  faPiggyBank,
+  faCalendarAlt,
+  faExclamationCircle,
 } from '@fortawesome/free-solid-svg-icons';
+import Swal from 'sweetalert2';
 
 const SolarCalculator = () => {
-  const [bill, setBill] = useState(20000);
-  const [phase, setPhase] = useState('single'); // manual only
+  const [bill, setBill] = useState(5000);
+  const [phase, setPhase] = useState('single');
   const [option, setOption] = useState('financed');
   const [term, setTerm] = useState(5);
-  const [rate, setRate] = useState(8.0);
+  const [rate, setRate] = useState(10);
   const [results, setResults] = useState(null);
+
+  const PACKAGE_PRICES = {
+    5: 750000,
+    10: 1540000,
+    15: 2050000,
+    20: 2360000,
+    30: 3350000,
+    40: 3960000,
+  };
+
+  // 2025 Solar Export Tariff (Net Accounting) – Rs per exported unit
+  const getExportRate = (systemSizeKw) => {
+    if (systemSizeKw < 5) return 20.90;
+    if (systemSizeKw <= 20) return 19.61;
+    if (systemSizeKw <= 100) return 17.46;
+    if (systemSizeKw <= 500) return 15.49;
+    if (systemSizeKw <= 1000) return 15.07;
+    return 14.46;
+  };
+
+  // Energy charge only (no fuel surcharge as per latest request)
+  const calculateEnergyCharge = (units) => {
+    if (units <= 0) return 0;
+    let energy = 0;
+
+    if (units <= 60) {
+      energy += Math.min(units, 30) * 4.5;
+      if (units > 30) energy += (units - 30) * 8;
+    } else {
+      energy += 60 * 12.75;
+      if (units > 60) energy += Math.min(units - 60, 30) * 18.5;
+      if (units > 90) energy += Math.min(units - 90, 30) * 24.5;
+      if (units > 120) energy += Math.min(units - 120, 60) * 41;
+      if (units > 180) energy += (units - 180) * 61;
+    }
+
+    return Math.round(energy);
+  };
+
+  // Fixed charge (your provided table)
+  const getFixedCharge = (units) => {
+    if (units <= 30) return 80;
+    if (units <= 60) return 210;
+    if (units <= 90) return 400;
+    if (units <= 120) return 1000;
+    if (units <= 180) return 1500;
+    return 2100;
+  };
+
+  // Full CEB bill = energy + fixed (no fuel surcharge)
+  const calculateCEBBill = (units) => {
+    const energy = calculateEnergyCharge(units);
+    const fixed = getFixedCharge(units);
+    return Math.round(energy + fixed);
+  };
+
+  // More accurate reverse lookup for consumption units
+  const estimateUnitsFromBill = (inputBill) => {
+    if (inputBill < 5000) return 80;
+    let bestUnits = 0;
+    let bestDiff = Infinity;
+
+    for (let u = 30; u <= 1200; u += 0.5) {
+      const calcBill = calculateCEBBill(Math.round(u));
+      const diff = Math.abs(calcBill - inputBill);
+      if (diff < bestDiff) {
+        bestDiff = diff;
+        bestUnits = Math.round(u);
+      }
+      if (calcBill > inputBill + 3000) break;
+    }
+
+    // Refine around best match
+    let finalUnits = bestUnits;
+    for (let u = Math.max(0, bestUnits - 10); u <= bestUnits + 10; u++) {
+      const diff = Math.abs(calculateCEBBill(u) - inputBill);
+      if (diff < Math.abs(calculateCEBBill(finalUnits) - inputBill)) {
+        finalUnits = u;
+      }
+    }
+
+    return finalUnits;
+  };
 
   const calculateSavings = () => {
     if (isNaN(bill) || bill < 5000) {
-      alert('Please enter a valid monthly bill of at least 5,000 LKR.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Invalid Input',
+        text: 'Please enter a valid monthly bill of at least 5,000 LKR.',
+      });
       return;
     }
 
-    // Fixed assumptions
-    const AVERAGE_RATE_PER_UNIT   = 50;
-    const UNITS_PER_KW_MONTH      = 125;
-    const COST_PER_KW             = 575000; // same for both phases
+    const UNITS_PER_KW_MONTH = 125;
 
-    const units       = Math.round(bill / AVERAGE_RATE_PER_UNIT);
-    const kwNeeded    = Math.ceil(units / UNITS_PER_KW_MONTH);
-    const totalCost   = kwNeeded * COST_PER_KW;
-    const annualSavings = bill * 12;
-    const paybackYears  = (totalCost / annualSavings).toFixed(1);
+    const estimatedUnits = estimateUnitsFromBill(bill);
+    const theoreticalKw = Math.ceil(estimatedUnits / UNITS_PER_KW_MONTH);
 
-    // New: Avg Monthly Generation from selected system
-    const avgMonthlyGeneration = Math.round(kwNeeded * UNITS_PER_KW_MONTH);
+    const packageSizes = Object.keys(PACKAGE_PRICES).map(Number).sort((a, b) => a - b);
+    let selectedKw = packageSizes.find(kw => kw >= theoreticalKw) || 40;
+
+    const totalCost = PACKAGE_PRICES[selectedKw];
+    const monthlyGeneration = Math.round(selectedKw * UNITS_PER_KW_MONTH);
+
+    // Net Accounting logic
+    const netImportedUnits = Math.max(0, estimatedUnits - monthlyGeneration);
+    const excessUnits = Math.max(0, monthlyGeneration - estimatedUnits);
+
+    const grossBill = calculateCEBBill(netImportedUnits);
+
+    const exportRate = getExportRate(selectedKw);
+    const monthlyExportPayment = excessUnits * exportRate;
+
+    const finalBill = Math.max(0, grossBill - monthlyExportPayment);
+
+    const monthlyBillSavings = bill - finalBill;
+    const totalMonthlyBenefit = monthlyBillSavings + monthlyExportPayment;
+
+    const annualBenefit = totalMonthlyBenefit * 12;
+    const paybackYears = annualBenefit > 0 ? (totalCost / annualBenefit).toFixed(1) : 'N/A';
 
     const phaseDisplay = phase === 'single' ? 'Single Phase' : 'Three Phase';
 
-    // Informative note for >5 kW on single phase
     let phaseNote = '';
-    if (kwNeeded > 5 && phase === 'single') {
-      phaseNote = `Note: A ${kwNeeded} kW system typically requires a three-phase connection for optimal performance and load balancing. You selected single-phase, which may limit system size or require upgrades.`;
-    } else if (kwNeeded > 5) {
-      phaseNote = `Note: Your recommended ${kwNeeded} kW system is suitable for three-phase connection.`;
+    if (selectedKw > 5 && phase === 'single') {
+      phaseNote = `A ${selectedKw} kW system requires a three-phase connection for net metering compliance and optimal performance in Sri Lanka. Single-phase is limited to 5 kW.`;
+    } else if (selectedKw > 5) {
+      phaseNote = `The selected ${selectedKw} kW package is suitable for three-phase connection.`;
     } else {
-      phaseNote = `Note: Single-phase is sufficient for systems 5 kW or below.`;
+      phaseNote = `A 5 kW system is generally compatible with single-phase connections.`;
     }
 
     const common = {
-      units: units.toLocaleString() + ' units',
-      kw: kwNeeded + ' kW',
-      generation: avgMonthlyGeneration.toLocaleString() + ' units', // New field
-      cost: 'Rs. ' + Math.round(totalCost).toLocaleString(),
-      payback: paybackYears + ' years',
-      phase: phaseDisplay,
-      note: phaseNote,
+      estimatedUnits: estimatedUnits.toLocaleString() + ' units',
+      theoreticalKw: theoreticalKw + ' kW',
+      recommendedPackage: selectedKw + ' kW',
+      generation: monthlyGeneration.toLocaleString() + ' units',
+      excessUnits: excessUnits.toLocaleString() + ' units',
+      exportRate: exportRate.toFixed(2) + ' LKR/unit',
+      monthlyNetIncome: 'Rs. ' + Math.round(monthlyExportPayment).toLocaleString(),
+      costDisplay: 'Rs. ' + totalCost.toLocaleString(),
+      paybackDisplay: paybackYears + ' years',
+      phaseDisplay,
+      phaseNote,
     };
 
     let calculatedResults;
     if (option === 'financed') {
       const monthlyRate = rate / 100 / 12;
       const months = term * 12;
-      const emi = monthlyRate === 0
-        ? totalCost / months
-        : totalCost * monthlyRate * Math.pow(1 + monthlyRate, months) / (Math.pow(1 + monthlyRate, months) - 1);
-
-      const monthlySavings = bill - emi;
+      let emi = totalCost / months;
+      if (monthlyRate > 0) {
+        emi = totalCost * monthlyRate * Math.pow(1 + monthlyRate, months) /
+              (Math.pow(1 + monthlyRate, months) - 1);
+      }
+      emi = Math.round(emi);
+      const netMonthly = totalMonthlyBenefit - emi;
 
       calculatedResults = {
         type: 'financed',
         ...common,
-        emi: 'Rs. ' + Math.round(emi).toLocaleString(),
-        savings: monthlySavings > 0 ? 'Rs. ' + Math.round(monthlySavings).toLocaleString() : 'Rs. ' + Math.round(-monthlySavings).toLocaleString(),
-        savingsPositive: monthlySavings > 0,
+        emiDisplay: 'Rs. ' + emi.toLocaleString(),
+        netMonthlyDisplay: netMonthly >= 0
+          ? 'Rs. ' + Math.round(netMonthly).toLocaleString()
+          : 'Rs. ' + Math.round(-netMonthly).toLocaleString(),
+        netPositive: netMonthly >= 0,
       };
     } else {
       calculatedResults = {
         type: 'cash',
         ...common,
-        savings: Math.round(bill).toLocaleString(),
+        savingsDisplay: 'Rs. ' + Math.round(totalMonthlyBenefit).toLocaleString(),
       };
     }
 
@@ -90,35 +198,35 @@ const SolarCalculator = () => {
   };
 
   return (
-    <div className="max-w-lg md:max-w-2xl mx-auto relative">
-      <h1 className="text-3xl md:text-4xl font-bold text-center mb-4">
-        Solar Savings & Loan Calculator
+    <div className="max-w-lg md:max-w-2xl mx-auto relative px-4 py-8">
+      <h1 className="text-3xl md:text-4xl font-bold text-center mb-4 text-gray-800">
+        Solar Package & Savings Calculator
       </h1>
       <p className="text-center text-base md:text-lg text-gray-600 mb-10">
-        Estimate your potential savings with a financed or cash solar system in Sri Lanka.
+        Net Accounting – 2025 CEB Export Tariffs
       </p>
 
       <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 space-y-8">
-        {/* Monthly Bill */}
+        {/* Monthly Bill Input */}
         <div>
           <label htmlFor="bill" className="block text-base md:text-lg font-semibold text-gray-700 mb-2">
-            Current Monthly Electricity Bill (LKR)
+            Your Current Monthly Bill (LKR)
           </label>
           <input
             type="number"
             id="bill"
             min="5000"
             value={bill}
-            onChange={(e) => setBill(parseFloat(e.target.value))}
-            placeholder="e.g. 20000"
+            onChange={(e) => setBill(parseFloat(e.target.value) || 0)}
+            placeholder="e.g. 5000"
             className="w-full px-4 py-3 md:py-4 text-base md:text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
           />
         </div>
 
-        {/* Manual Phase Selection */}
-        <div className="flex flex-col items-center border-1 border-gray-200 p-4 rounded-lg">
+        {/* Phase Selection */}
+        <div className="flex flex-col items-center border border-gray-200 p-4 rounded-lg">
           <label className="text-base md:text-lg font-semibold text-gray-700 mb-4">
-            Current Electricity Connection Phase
+            Connection Type
           </label>
           <div className="flex items-center justify-center space-x-8">
             <span className="text-lg font-medium text-gray-600">Single Phase</span>
@@ -133,18 +241,15 @@ const SolarCalculator = () => {
             </label>
             <span className="text-lg font-medium text-gray-600">Three Phase</span>
           </div>
-          <p className="text-center text-sm text-gray-600 mt-4">
-            Select your current home connection type.
-          </p>
         </div>
 
-        {/* Installation Option */}
-        <div className="flex flex-col items-center border-1 border-gray-200 p-4 rounded-lg">
+        {/* Payment Option */}
+        <div className="flex flex-col items-center border border-gray-200 p-4 rounded-lg">
           <label className="text-base md:text-lg font-semibold text-gray-700 mb-4">
-            Installation Option
+            Payment Option
           </label>
           <div className="flex items-center justify-center space-x-8">
-            <span className="text-lg font-medium text-gray-600">Cash Purchase</span>
+            <span className="text-lg font-medium text-gray-600">Cash</span>
             <label className="relative inline-flex items-center cursor-pointer">
               <input
                 type="checkbox"
@@ -154,7 +259,7 @@ const SolarCalculator = () => {
               />
               <div className="w-14 h-8 bg-gray-400 rounded-full peer peer-checked:bg-green-600 after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:after:translate-x-full"></div>
             </label>
-            <span className="text-lg font-medium text-gray-600">Financed</span>
+            <span className="text-lg font-medium text-gray-600">Financed / Loan</span>
           </div>
         </div>
 
@@ -177,7 +282,6 @@ const SolarCalculator = () => {
                 <option value={10}>10 Years</option>
               </select>
             </div>
-
             <div>
               <label htmlFor="rate" className="block text-base md:text-lg font-semibold text-gray-700 mb-2">
                 Annual Interest Rate (%)
@@ -187,8 +291,8 @@ const SolarCalculator = () => {
                 id="rate"
                 step="0.1"
                 value={rate}
-                onChange={(e) => setRate(parseFloat(e.target.value))}
-                placeholder="e.g. 0 for 0% plans, 8 for bank loans"
+                onChange={(e) => setRate(parseFloat(e.target.value) || 0)}
+                placeholder="e.g. 8.0"
                 className="w-full px-4 py-3 md:py-4 text-base md:text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
               />
             </div>
@@ -199,79 +303,86 @@ const SolarCalculator = () => {
           onClick={calculateSavings}
           className="w-full mt-8 py-4 md:py-5 bg-green-600 hover:bg-green-700 text-white font-bold text-lg md:text-xl rounded-lg shadow-md transition transform hover:scale-105"
         >
-          Calculate Savings
+          Calculate Savings & Package
         </button>
       </div>
 
-      {/* Results Grid – Now includes Avg Monthly Generation */}
+      {/* RESULTS */}
       {results && (
         <div className="mt-12 bg-white rounded-2xl shadow-xl p-6 md:p-8 space-y-6">
           <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-900">
-            {results.type === 'financed' ? 'Financed Option (With Loan)' : 'Cash Purchase Option (Loan-Free)'}
+            {results.type === 'financed' ? 'Financed Solar Package' : 'Cash Purchase Solar Package'}
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Connection Type */}
             <div className="bg-gray-50 rounded-lg p-5 text-center shadow-md">
               <FontAwesomeIcon icon={faPlug} className="text-green-600 text-4xl mb-3" />
               <p className="text-sm text-gray-600 font-medium">Connection Type</p>
-              <p className="text-xl font-bold">{results.phase}</p>
+              <p className="text-xl font-bold">{results.phaseDisplay}</p>
             </div>
 
-            {/* Estimated Consumption */}
             <div className="bg-gray-50 rounded-lg p-5 text-center shadow-md">
               <FontAwesomeIcon icon={faBolt} className="text-green-600 text-4xl mb-3" />
               <p className="text-sm text-gray-600 font-medium">Estimated Consumption</p>
-              <p className="text-xl font-bold">{results.units}</p>
+              <p className="text-xl font-bold">{results.estimatedUnits}</p>
             </div>
 
-            {/* Recommended System Size */}
             <div className="bg-gray-50 rounded-lg p-5 text-center shadow-md">
               <FontAwesomeIcon icon={faSolarPanel} className="text-green-600 text-4xl mb-3" />
-              <p className="text-sm text-gray-600 font-medium">Recommended System Size</p>
-              <p className="text-xl font-bold">{results.kw}</p>
+              <p className="text-sm text-gray-600 font-medium">Required System Size</p>
+              <p className="text-xl font-bold">{results.theoreticalKw}</p>
             </div>
 
-            {/* Avg Monthly Generation – NEW */}
+            <div className="bg-green-50 rounded-lg p-5 text-center shadow-md ring-2 ring-green-400">
+              <FontAwesomeIcon icon={faSolarPanel} className="text-green-700 text-4xl mb-3" />
+              <p className="text-sm text-green-800 font-semibold">Recommended Package</p>
+              <p className="text-2xl font-bold text-green-800">{results.recommendedPackage}</p>
+            </div>
+
             <div className="bg-gray-50 rounded-lg p-5 text-center shadow-md">
               <FontAwesomeIcon icon={faSolarPanel} className="text-green-600 text-4xl mb-3" />
               <p className="text-sm text-gray-600 font-medium">Avg Monthly Generation</p>
               <p className="text-xl font-bold">{results.generation}</p>
             </div>
 
-            {/* Cost */}
-            <div className="bg-gray-50 rounded-lg p-5 text-center shadow-md">
-              <FontAwesomeIcon icon={faMoneyBillWave} className="text-green-600 text-4xl mb-3" />
-              <p className="text-sm text-gray-600 font-medium">
-                {results.type === 'financed' ? 'Total System Cost' : 'Upfront Cost'}
-              </p>
-              <p className="text-xl font-bold">{results.cost}</p>
-            </div>
-
-            {/* Savings or EMI */}
-            <div className="bg-gray-50 rounded-lg p-5 text-center shadow-md">
-              <FontAwesomeIcon icon={faPiggyBank} className="text-green-600 text-4xl mb-3" />
-              <p className="text-sm text-gray-600 font-medium">
-                {results.type === 'financed' ? 'Monthly EMI' : 'Immediate Monthly Savings'}
-              </p>
-              <p className={`text-xl font-bold ${results.savingsPositive ? 'text-green-600' : 'text-red-600'}`}>
-                {results.type === 'financed' ? results.emi : `Rs. ${results.savings}`}
+            <div className="bg-green-50 rounded-lg p-5 text-center shadow-md ring-2 ring-green-400 md:col-span-3">
+              <FontAwesomeIcon icon={faPiggyBank} className="text-green-700 text-4xl mb-3" />
+              <p className="text-sm text-green-800 font-semibold">Monthly Net Income</p>
+              <p className="text-3xl font-bold text-green-800">{results.monthlyNetIncome}</p>
+              <p className="text-sm text-gray-600 mt-2">
+                (Income CEB pays you for excess units exported)
               </p>
             </div>
 
-            {/* Payback Period */}
+            {option === 'financed' ? (
+              <>
+                <div className="bg-gray-50 rounded-lg p-5 text-center shadow-md">
+                  <FontAwesomeIcon icon={faPiggyBank} className="text-green-600 text-4xl mb-3" />
+                  <p className="text-sm text-gray-600 font-medium">Monthly EMI</p>
+                  <p className="text-xl font-bold">{results.emiDisplay}</p>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-5 text-center shadow-md">
+                  <FontAwesomeIcon icon={faPiggyBank} className="text-green-600 text-4xl mb-3" />
+                  <p className="text-sm text-gray-600 font-medium">Net Monthly Cashflow</p>
+                  <p className={`text-xl font-bold ${results.netPositive ? 'text-green-600' : 'text-red-600'}`}>
+                    {results.netMonthlyDisplay}
+                  </p>
+                </div>
+              </>
+            ) : null}
+
             <div className="bg-gray-50 rounded-lg p-5 text-center shadow-md">
               <FontAwesomeIcon icon={faCalendarAlt} className="text-green-600 text-4xl mb-3" />
-              <p className="text-sm text-gray-600 font-medium">Payback Period</p>
-              <p className="text-xl font-bold">{results.payback}</p>
+              <p className="text-sm text-gray-600 font-medium">Estimated Payback Period</p>
+              <p className="text-xl font-bold">{results.paybackDisplay}</p>
+              <p className="text-xs text-gray-500 mt-1">(based on total savings + export income)</p>
             </div>
 
-            {/* Note – full width */}
-            {results.note && (
+            {results.phaseNote && (
               <div className="bg-orange-50 rounded-lg p-5 text-center shadow-md md:col-span-3">
                 <FontAwesomeIcon icon={faExclamationCircle} className="text-orange-600 text-4xl mb-3" />
                 <p className="text-sm text-gray-600 font-medium">Important Note</p>
-                <p className="text-lg font-semibold text-orange-700">{results.note}</p>
+                <p className="text-lg font-semibold text-orange-700">{results.phaseNote}</p>
               </div>
             )}
           </div>
@@ -280,20 +391,17 @@ const SolarCalculator = () => {
 
       {/* Assumptions */}
       <div className="mt-12 bg-gray-100 rounded-2xl p-6 md:p-8 text-sm md:text-base text-gray-600">
-        <strong className="block mb-3 text-lg text-gray-800">Assumptions (Sri Lanka market ~2026):</strong>
+        <strong className="block mb-3 text-lg text-gray-800">Real-World Assumptions (2025–2026):</strong>
         <ul className="list-disc list-inside space-y-2 font-semibold">
-          <li>Average effective electricity rate: 50 LKR/unit</li>
-          <li>Average monthly production: 125 units per kW (Colombo/Western Province)</li>
-          <li>Cost per kW: ~575,000 LKR (Depends on the market ratio and other factors.)</li>
-          <li>System sized to fully offset your bill</li>
-          <li>Fixed charges & connection fees ignored for simplicity</li>
+          <li>CEB domestic tariff slabs + fixed charges (no fuel surcharge)</li>
+          <li>Net Accounting: export payment for excess units</li>
+          <li>Export rates: 20.90 (&lt;5 kW), 19.61 (5–20 kW), 17.46 (20–100 kW), etc.</li>
+          <li>Generation: 125 units (or kW/month) (Western Province average)</li>
+          <li>Monthly Net Income = only export payment from excess units</li>
+          <li>Payback includes full benefit (bill reduction + export income)</li>
         </ul>
-        
-        <p className="text-md font-semibold mt-4">
-          <span className="text-red-700">
-          This is an estimate only.
-          </span> {' '} 
-           Actual costs, production, and suitability vary by provider, roof, and connection type.
+        <p className="mt-4 font-semibold text-red-700">
+          This is an estimate only. Actual tariffs, export rates, generation and billing may vary.
         </p>
       </div>
     </div>

@@ -1,8 +1,11 @@
+// src/pages/AdminDashboard.jsx
 import { useState, useEffect } from "react";
 import { supabase } from "../supabase";
+import Swal from "sweetalert2";
 
 const AdminDashboard = () => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [isRegistering, setIsRegistering] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,15 +21,31 @@ const AdminDashboard = () => {
   const [newImages, setNewImages] = useState([]);
   const [uploading, setUploading] = useState(false);
 
+  // Session & Auth Listener
   useEffect(() => {
+    const checkSession = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      setUser(session?.user ?? null);
+      setLoading(false);
+    };
+
+    checkSession();
+
     const { data: authListener } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setUser(session?.user || null);
+      (_event, session) => {
+        setUser(session?.user ?? null);
+        setLoading(false);
       },
     );
-    return () => authListener.subscription.unsubscribe();
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
   }, []);
 
+  // Fetch projects when user is authenticated
   useEffect(() => {
     if (user) fetchProjects();
   }, [user]);
@@ -36,8 +55,16 @@ const AdminDashboard = () => {
       .from("projects")
       .select("*")
       .order("date", { ascending: false });
-    if (error) alert("Error fetching: " + error.message);
-    else setProjects(data || []);
+
+    if (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Fetch Error",
+        text: error.message,
+      });
+    } else {
+      setProjects(data || []);
+    }
   };
 
   const handleAuth = async (e) => {
@@ -46,14 +73,52 @@ const AdminDashboard = () => {
       let { error } = isRegistering
         ? await supabase.auth.signUp({ email, password })
         : await supabase.auth.signInWithPassword({ email, password });
+
       if (error) throw error;
+
+      Swal.fire({
+        icon: "success",
+        title: isRegistering ? "Registration Successful!" : "Login Successful!",
+        text: isRegistering
+          ? "Please check your email to confirm."
+          : "Welcome back!",
+        timer: 2500,
+      });
     } catch (err) {
-      alert("Auth error: " + err.message);
+      Swal.fire({
+        icon: "error",
+        title: "Authentication Error",
+        text: err.message,
+      });
     }
   };
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    const result = await Swal.fire({
+      title: "Log Out?",
+      text: "Are you sure you want to log out of the admin dashboard?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, log out",
+      cancelButtonText: "No, stay logged in",
+    });
+
+    if (result.isConfirmed) {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        Swal.fire("Error", error.message, "error");
+      } else {
+        Swal.fire({
+          icon: "success",
+          title: "Logged Out",
+          text: "You have been successfully logged out.",
+          timer: 2000,
+        });
+      }
+    }
+    // If "No" or dialog closed → do nothing
   };
 
   const uploadImages = async () => {
@@ -64,6 +129,7 @@ const AdminDashboard = () => {
         .from("projects")
         .upload(`${Date.now()}_${file.name}`, file);
       if (error) throw error;
+
       const {
         data: { publicUrl },
       } = supabase.storage.from("projects").getPublicUrl(data.path);
@@ -88,13 +154,16 @@ const AdminDashboard = () => {
           .from("projects")
           .update(payload)
           .eq("id", editingProject.id);
+        Swal.fire("Success", "Project updated successfully", "success");
       } else {
         await supabase.from("projects").insert(payload);
+        Swal.fire("Success", "Project added successfully", "success");
       }
+
       fetchProjects();
       resetForm();
     } catch (err) {
-      alert("Error: " + err.message);
+      Swal.fire("Error", err.message, "error");
     } finally {
       setUploading(false);
     }
@@ -125,57 +194,68 @@ const AdminDashboard = () => {
   };
 
   const handleDelete = async (id) => {
-    if (confirm("Delete?")) {
-      await supabase.from("projects").delete().eq("id", id);
-      fetchProjects();
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (result.isConfirmed) {
+      const { error } = await supabase.from("projects").delete().eq("id", id);
+      if (error) {
+        Swal.fire("Error", error.message, "error");
+      } else {
+        Swal.fire("Deleted!", "Project has been deleted.", "success");
+        fetchProjects();
+      }
     }
   };
 
   const removeImage = async (index) => {
-    if (
-      !editingProject ||
-      !editingProject.images ||
-      !Array.isArray(editingProject.images)
-    ) {
-      alert("No images available or invalid project data.");
+    if (!editingProject || !Array.isArray(editingProject.images)) {
+      Swal.fire(
+        "Error",
+        "No images available or invalid project data.",
+        "error",
+      );
       return;
     }
 
     const url = editingProject.images[index];
-
-    // Safety check: ensure url is a valid string
     if (typeof url !== "string" || !url.trim()) {
-      alert("Invalid image at position " + index);
+      Swal.fire("Error", `Invalid image at position ${index}`, "error");
       return;
     }
 
-    // Ask for confirmation
-    const confirmed = window.confirm(
-      `Are you sure you want to remove this image?\n\nThis action cannot be undone.`,
-    );
+    const result = await Swal.fire({
+      title: "Remove Image?",
+      text: "This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, remove it",
+    });
 
-    if (!confirmed) {
-      // User clicked "No" or canceled → do nothing
-      return;
-    }
+    if (!result.isConfirmed) return;
 
-    // User clicked "Yes" → proceed with deletion
     try {
-      // Extract file path from Supabase public URL
       const filePathMatch = url.match(/\/object\/public\/projects\/(.+)/);
       if (!filePathMatch || !filePathMatch[1]) {
         throw new Error("Could not extract file path from URL");
       }
       const filePath = filePathMatch[1];
 
-      // Delete from Supabase Storage
       const { error: storageError } = await supabase.storage
         .from("projects")
         .remove([filePath]);
 
       if (storageError) throw storageError;
 
-      // Update images array in state & database
       const updatedImages = editingProject.images.filter((_, i) => i !== index);
 
       const { error: dbError } = await supabase
@@ -185,19 +265,29 @@ const AdminDashboard = () => {
 
       if (dbError) throw dbError;
 
-      // Refresh full project list
       fetchProjects();
-
-      // Update current editing state
       setEditingProject({ ...editingProject, images: updatedImages });
 
-      alert("Image removed successfully!");
+      Swal.fire("Success", "Image removed successfully!", "success");
     } catch (err) {
       console.error("Remove image error:", err);
-      alert("Failed to remove image: " + (err.message || "Unknown error"));
+      Swal.fire("Error", err.message || "Unknown error", "error");
     }
   };
 
+  // ====================== LOADING STATE ======================
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-green-600 mx-auto mb-4"></div>
+          <p className="text-lg text-gray-600">Checking session...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // ====================== LOGIN SCREEN ======================
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -228,17 +318,15 @@ const AdminDashboard = () => {
             type="submit"
             className="w-full bg-green-600 text-white py-4 rounded-lg hover:bg-green-700"
           >
-            {" "}
             {isRegistering ? "Register" : "Login"}
           </button>
           <p className="text-center mt-6">
-            {isRegistering ? "Have account?" : "No account?"}{" "}
+            {isRegistering ? "Have an account?" : "No account?"}{" "}
             <button
               type="button"
               onClick={() => setIsRegistering(!isRegistering)}
               className="text-green-600 hover:underline"
             >
-              {" "}
               {isRegistering ? "Login" : "Register"}
             </button>
           </p>
@@ -247,6 +335,7 @@ const AdminDashboard = () => {
     );
   }
 
+  // ====================== MAIN ADMIN DASHBOARD ======================
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="container mx-auto px-6">
@@ -256,17 +345,17 @@ const AdminDashboard = () => {
             <p className="text-lg">Logged in: {user.email}</p>
             <button
               onClick={handleLogout}
-              className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700"
+              className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition"
             >
               Logout
             </button>
           </div>
         </div>
 
-        {/* Add/Edit Form */}
+        {/* Add/Edit Project Form */}
         <div className="bg-white rounded-2xl shadow-xl p-10 mb-16">
           <h2 className="text-3xl font-bold mb-8">
-            {editingProject ? "Edit" : "Add"} Project
+            {editingProject ? "Edit Project" : "Add New Project"}
           </h2>
           <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-6">
             <input
@@ -322,7 +411,7 @@ const AdminDashboard = () => {
             {/* Image Upload */}
             <div className="md:col-span-2">
               <label className="block text-lg font-medium mb-4">
-                Upload New Images
+                Upload New Images (images/videos)
               </label>
               <input
                 type="file"
@@ -333,12 +422,12 @@ const AdminDashboard = () => {
               />
               {newImages.length > 0 && (
                 <p className="mt-2 text-sm text-gray-600">
-                  {newImages.length} files selected
+                  {newImages.length} file(s) selected
                 </p>
               )}
             </div>
 
-            {/* Existing Images (with Remove) */}
+            {/* Existing Images with Remove */}
             {editingProject && editingProject.images?.length > 0 && (
               <div className="md:col-span-2">
                 <p className="text-lg font-medium mb-4">
@@ -346,7 +435,7 @@ const AdminDashboard = () => {
                 </p>
                 <div className="grid grid-cols-3 gap-4">
                   {editingProject.images.map((url, i) => (
-                    <div key={i} className="relative">
+                    <div key={i} className="relative group">
                       <img
                         src={url}
                         alt="Project"
@@ -355,7 +444,7 @@ const AdminDashboard = () => {
                       <button
                         type="button"
                         onClick={() => removeImage(i)}
-                        className="absolute top-2 right-2 bg-red-600 text-white rounded-full w-8 h-8 hover:bg-red-700"
+                        className="absolute top-2 right-2 bg-red-600 text-white rounded-full w-8 h-8 hover:bg-red-700 flex items-center justify-center opacity-80 group-hover:opacity-100 transition"
                       >
                         ×
                       </button>
@@ -369,7 +458,7 @@ const AdminDashboard = () => {
               <button
                 type="submit"
                 disabled={uploading}
-                className="bg-green-600 text-white px-8 py-4 rounded-lg hover:bg-green-700 disabled:opacity-50"
+                className="bg-green-600 text-white px-8 py-4 rounded-lg hover:bg-green-700 disabled:opacity-50 flex-1"
               >
                 {uploading
                   ? "Uploading..."
@@ -381,7 +470,7 @@ const AdminDashboard = () => {
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="bg-gray-600 text-white px-8 py-4 rounded-lg hover:bg-gray-700"
+                  className="bg-gray-600 text-white px-8 py-4 rounded-lg hover:bg-gray-700 flex-1"
                 >
                   Cancel
                 </button>
