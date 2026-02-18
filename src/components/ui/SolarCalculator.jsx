@@ -5,6 +5,7 @@ import {
   faPlug,
   faBolt,
   faSolarPanel,
+  faMoneyBillWave,
   faPiggyBank,
   faCalendarAlt,
   faExclamationCircle,
@@ -12,11 +13,11 @@ import {
 import Swal from 'sweetalert2';
 
 const SolarCalculator = () => {
-  const [bill, setBill] = useState(5000);
+  const [bill, setBill] = useState(22005);
   const [phase, setPhase] = useState('single');
   const [option, setOption] = useState('financed');
   const [term, setTerm] = useState(5);
-  const [rate, setRate] = useState(10);
+  const [rate, setRate] = useState(8.0);
   const [results, setResults] = useState(null);
 
   const PACKAGE_PRICES = {
@@ -38,7 +39,7 @@ const SolarCalculator = () => {
     return 14.46;
   };
 
-  // Energy charge only (no fuel surcharge as per latest request)
+  // Energy charge only (no fuel surcharge)
   const calculateEnergyCharge = (units) => {
     if (units <= 0) return 0;
     let energy = 0;
@@ -57,7 +58,7 @@ const SolarCalculator = () => {
     return Math.round(energy);
   };
 
-  // Fixed charge (your provided table)
+  // Fixed charge (your table)
   const getFixedCharge = (units) => {
     if (units <= 30) return 80;
     if (units <= 60) return 210;
@@ -67,14 +68,14 @@ const SolarCalculator = () => {
     return 2100;
   };
 
-  // Full CEB bill = energy + fixed (no fuel surcharge)
+  // Full CEB bill = energy + fixed (no fuel)
   const calculateCEBBill = (units) => {
     const energy = calculateEnergyCharge(units);
     const fixed = getFixedCharge(units);
     return Math.round(energy + fixed);
   };
 
-  // More accurate reverse lookup for consumption units
+  // Accurate reverse lookup for consumption units
   const estimateUnitsFromBill = (inputBill) => {
     if (inputBill < 5000) return 80;
     let bestUnits = 0;
@@ -90,7 +91,6 @@ const SolarCalculator = () => {
       if (calcBill > inputBill + 3000) break;
     }
 
-    // Refine around best match
     let finalUnits = bestUnits;
     for (let u = Math.max(0, bestUnits - 10); u <= bestUnits + 10; u++) {
       const diff = Math.abs(calculateCEBBill(u) - inputBill);
@@ -163,6 +163,7 @@ const SolarCalculator = () => {
       paybackDisplay: paybackYears + ' years',
       phaseDisplay,
       phaseNote,
+      totalMonthlyBenefit: Math.round(totalMonthlyBenefit),
     };
 
     let calculatedResults;
@@ -175,22 +176,23 @@ const SolarCalculator = () => {
               (Math.pow(1 + monthlyRate, months) - 1);
       }
       emi = Math.round(emi);
-      const netMonthly = totalMonthlyBenefit - emi;
+
+      const netMonthly = common.totalMonthlyBenefit - emi;
 
       calculatedResults = {
         type: 'financed',
         ...common,
         emiDisplay: 'Rs. ' + emi.toLocaleString(),
         netMonthlyDisplay: netMonthly >= 0
-          ? 'Rs. ' + Math.round(netMonthly).toLocaleString()
-          : 'Rs. ' + Math.round(-netMonthly).toLocaleString(),
+          ? 'Rs. ' + netMonthly.toLocaleString()
+          : 'Rs. ' + (-netMonthly).toLocaleString(),
         netPositive: netMonthly >= 0,
       };
     } else {
       calculatedResults = {
         type: 'cash',
         ...common,
-        savingsDisplay: 'Rs. ' + Math.round(totalMonthlyBenefit).toLocaleString(),
+        savingsDisplay: 'Rs. ' + common.totalMonthlyBenefit.toLocaleString(),
       };
     }
 
@@ -218,7 +220,7 @@ const SolarCalculator = () => {
             min="5000"
             value={bill}
             onChange={(e) => setBill(parseFloat(e.target.value) || 0)}
-            placeholder="e.g. 5000"
+            placeholder="e.g. 22005"
             className="w-full px-4 py-3 md:py-4 text-base md:text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
           />
         </div>
@@ -350,32 +352,37 @@ const SolarCalculator = () => {
               <p className="text-sm text-green-800 font-semibold">Monthly Net Income</p>
               <p className="text-3xl font-bold text-green-800">{results.monthlyNetIncome}</p>
               <p className="text-sm text-gray-600 mt-2">
-                (Income CEB pays you for excess units exported)
+                (Income from excess units exported to CEB)
               </p>
             </div>
 
-            {option === 'financed' ? (
+            {option === 'financed' && (
               <>
                 <div className="bg-gray-50 rounded-lg p-5 text-center shadow-md">
                   <FontAwesomeIcon icon={faPiggyBank} className="text-green-600 text-4xl mb-3" />
                   <p className="text-sm text-gray-600 font-medium">Monthly EMI</p>
                   <p className="text-xl font-bold">{results.emiDisplay}</p>
                 </div>
-                <div className="bg-gray-50 rounded-lg p-5 text-center shadow-md">
+
+                <div className="bg-gray-50 rounded-lg p-5 text-center shadow-md ring-2 ring-green-300 md:col-span-2">
                   <FontAwesomeIcon icon={faPiggyBank} className="text-green-600 text-4xl mb-3" />
                   <p className="text-sm text-gray-600 font-medium">Net Monthly Cashflow</p>
-                  <p className={`text-xl font-bold ${results.netPositive ? 'text-green-600' : 'text-red-600'}`}>
+                  <p className={`text-3xl font-bold ${results.netPositive ? 'text-green-700' : 'text-red-700'}`}>
                     {results.netMonthlyDisplay}
+                  </p>
+                  <p className="text-sm text-gray-600 mt-2">
+                    {results.netPositive 
+                      ? "Positive: You gain this amount each month after EMI"
+                      : "Negative: Loan EMI exceeds solar benefit this month"}
                   </p>
                 </div>
               </>
-            ) : null}
+            )}
 
             <div className="bg-gray-50 rounded-lg p-5 text-center shadow-md">
               <FontAwesomeIcon icon={faCalendarAlt} className="text-green-600 text-4xl mb-3" />
               <p className="text-sm text-gray-600 font-medium">Estimated Payback Period</p>
               <p className="text-xl font-bold">{results.paybackDisplay}</p>
-              <p className="text-xs text-gray-500 mt-1">(based on total savings + export income)</p>
             </div>
 
             {results.phaseNote && (
@@ -396,8 +403,9 @@ const SolarCalculator = () => {
           <li>CEB domestic tariff slabs + fixed charges (no fuel surcharge)</li>
           <li>Net Accounting: export payment for excess units</li>
           <li>Export rates: 20.90 (&lt;5 kW), 19.61 (5–20 kW), 17.46 (20–100 kW), etc.</li>
-          <li>Generation: 125 units (or kW/month) (Western Province average)</li>
+          <li>Generation: 125 units (or kW/mont) (Western Province average)</li>
           <li>Monthly Net Income = only export payment from excess units</li>
+          <li>Net Monthly Cashflow (financed) = Total benefit - EMI</li>
           <li>Payback includes full benefit (bill reduction + export income)</li>
         </ul>
         <p className="mt-4 font-semibold text-red-700">
