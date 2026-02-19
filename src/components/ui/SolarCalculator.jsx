@@ -13,11 +13,11 @@ import {
 import Swal from 'sweetalert2';
 
 const SolarCalculator = () => {
-  const [bill, setBill] = useState(22005);
+  const [bill, setBill] = useState(5000);
   const [phase, setPhase] = useState('single');
   const [option, setOption] = useState('financed');
   const [term, setTerm] = useState(5);
-  const [rate, setRate] = useState(8.0);
+  const [rate, setRate] = useState(11.0);
   const [results, setResults] = useState(null);
 
   const PACKAGE_PRICES = {
@@ -220,7 +220,7 @@ const SolarCalculator = () => {
             min="5000"
             value={bill}
             onChange={(e) => setBill(parseFloat(e.target.value) || 0)}
-            placeholder="e.g. 22005"
+            placeholder="e.g. 5000"
             className="w-full px-4 py-3 md:py-4 text-base md:text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
           />
         </div>
@@ -400,10 +400,10 @@ const SolarCalculator = () => {
       <div className="mt-12 bg-gray-100 rounded-2xl p-6 md:p-8 text-sm md:text-base text-gray-600">
         <strong className="block mb-3 text-lg text-gray-800">Real-World Assumptions (2025–2026):</strong>
         <ul className="list-disc list-inside space-y-2 font-semibold">
-          <li>CEB domestic tariff slabs + fixed charges (no fuel surcharge)</li>
+          <li>CEB domestic tariff + fixed charges</li>
           <li>Net Accounting: export payment for excess units</li>
           <li>Export rates: 20.90 (&lt;5 kW), 19.61 (5–20 kW), 17.46 (20–100 kW), etc.</li>
-          <li>Generation: 125 units (or kW/mont) (Western Province average)</li>
+          <li>Generation: 125 units per 1kW (Western Province average)</li>
           <li>Monthly Net Income = only export payment from excess units</li>
           <li>Net Monthly Cashflow (financed) = Total benefit - EMI</li>
           <li>Payback includes full benefit (bill reduction + export income)</li>

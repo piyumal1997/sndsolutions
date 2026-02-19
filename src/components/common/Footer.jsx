@@ -1,4 +1,4 @@
-// src/components/common/Footer.jsx (Updated with multiple offices, balanced layout inspired by the example)
+// src/components/common/Footer.jsx
 import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLocationDot, faPhoneAlt, faEnvelope } from '@fortawesome/free-solid-svg-icons';
@@ -10,10 +10,12 @@ const Footer = () => {
     {
       title: "Head Office",
       address: company.address,
+      mapLink: `https://maps.app.goo.gl/8ro38ixEyEviarXV9`,
     },
     {
       title: "Colombo Office",
       address: company.office,
+      mapLink: `https://maps.app.goo.gl/yFjpMCJZrBbe9ZfKA`,
     },
   ];
 
@@ -21,11 +23,11 @@ const Footer = () => {
     <footer className="bg-gradient-to-b from-green-800 to-green-700 text-white py-12 mt-auto">
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-[2fr_4fr_1fr_1fr] gap-8 lg:gap-12">
-          {/* Company Info + Logo - Wider column for branding */}
+          {/* Company Info + Logo */}
           <div>
             <div className="flex items-center gap-4 mb-6">
               <img
-                src={company.logo[0]} // Fixed: logo is an array, use [0]
+                src={company.logo[0]}
                 alt={`${company.name} logo`}
                 className="h-16 md:h-24 w-auto object-contain"
               />
@@ -35,7 +37,7 @@ const Footer = () => {
             </p>
           </div>
 
-          {/* Contact - Wider column with two offices side-by-side on md+ */}
+          {/* Contact - Two offices with clickable Google Maps links */}
           <div>
             <h3 className="text-lg md:text-xl font-bold mb-6">Contact</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
@@ -44,9 +46,18 @@ const Footer = () => {
                   <h4 className="text-base md:text-lg font-bold underline mb-4">
                     {office.title}
                   </h4>
-                  <p className="text-gray-50 text-sm md:text-base mb-6">
-                    {office.address}
-                  </p>
+                  <a
+                    href={office.mapLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-start gap-2 text-gray-50 hover:text-green-300 transition text-sm md:text-base mb-6 group"
+                  >
+                    {/* <FontAwesomeIcon 
+                      icon={faLocationDot} 
+                      className="mt-1 text-green-300 group-hover:text-white transition" 
+                    /> */}
+                    <span>{office.address}</span>
+                  </a>
                   <div className="space-y-2">
                     <p className="text-gray-50 text-sm md:text-base">
                       Tel:{' '}
